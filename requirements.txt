@@ -6,3 +6,4 @@ pytest
 python-dotenv
 Sphinx
 toml
+customtkinter
