@@ -53,12 +53,12 @@ Crown copyright and available under the terms of the Open Government 3.0 licence
 - Python 3.6.1+ installed
 
 The required packages can be install directly from the requirements.txt file. For the example directory below:
-
+```
 D:/
 └── git_repos/
     └── Hackathon/
         └── requirements.txt
-
+```
 The command is:
 ```shell
 pip install -r "D:/git_repos/Hackathon/requirements.txt"
