@@ -29,6 +29,8 @@ def guess():
     displayBox.delete("0.0","200.0")
     displayBox.insert("0.0",word)
     count = count + 1
+    if count > 5:
+        root.destroy()
     print(count)
     return(count)
     
