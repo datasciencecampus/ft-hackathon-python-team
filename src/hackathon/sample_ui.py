@@ -1,11 +1,47 @@
 # -*- coding: utf-8 -*-
 """
+Created on Tue Jun  6 14:33:02 2023
+
+@author: hoolov
+"""
+
+# -*- coding: utf-8 -*-
+"""
 Created on Mon May 15 14:43:10 2023
 
 @author: willin6
 """
 
 import customtkinter as ctk
+
+count = 0
+
+def guess():
+    global count
+    word = submit_box.get().upper()
+    if len(word) == 5:
+        for i in range(len(word)):
+            displayBox = ctk.CTkTextbox(root,
+                                      height=40,
+                                      width=40,
+                                      fg_color='transparent',
+                                      border_color=(BLACK, WHITE)
+                                      )
+            displayBox.grid(row = count,
+                            column = i,
+                            columnspan = 1,
+                            padx = 20,
+                            pady = 20,
+                           # sticky = "nsew"
+                            )
+         #   displayBox.delete("0.0","200.0")
+            displayBox.insert("0.0",word[i])
+        count = count + 1
+        if count > 5:
+            root.destroy()
+        
+        return(count)
+        
 
 WORD_LENGTH = 5
 NUM_GUESSES = 6
@@ -24,6 +60,8 @@ root = ctk.CTk()
 
 # Window name
 root.title("Team FinTrans Wordle")
+
+
 
 # Generate 5x6 grid
 for row in range(NUM_GUESSES):
@@ -58,8 +96,18 @@ submit_box = ctk.CTkEntry(root,
                           fg_color='transparent',
                           text_color=(BLACK, WHITE))
 submit_box.grid(row=NUM_GUESSES,
-                column=1,
-                columnspan=6)
+                column=0,
+                columnspan=4)
+
+guess_button = ctk.CTkButton(master = root,
+                             text = "Guess",
+                             command = guess)
+    
+guess_button.grid(row = NUM_GUESSES,
+                  column = 3,
+                  columnspan = 6)
+    
+
 # If left blank, will autofit
 # existing elements
 root.geometry()
