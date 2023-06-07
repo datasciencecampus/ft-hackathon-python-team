@@ -18,20 +18,28 @@ count = 0
 
 def guess():
     global count
-    word = submit_box.get()
-    displayBox.grid(row = count,
-                column = 0,
-                columnspan = 4,
-                padx = 20,
-                pady = 20,
-                sticky = "nsew"
-                )
-    displayBox.delete("0.0","200.0")
-    displayBox.insert("0.0",word)
+    word = submit_box.get().upper()
+    
+    for i in range(len(word)):
+        displayBox = ctk.CTkTextbox(root,
+                                  height=40,
+                                  width=40,
+                                  fg_color='transparent',
+                                  border_color=(BLACK, WHITE)
+                                  )
+        displayBox.grid(row = count,
+                        column = i,
+                        columnspan = 1,
+                        padx = 20,
+                        pady = 20,
+                       # sticky = "nsew"
+                        )
+     #   displayBox.delete("0.0","200.0")
+        displayBox.insert("0.0",word[i])
     count = count + 1
     if count > 5:
         root.destroy()
-    print(count)
+    
     return(count)
     
 
@@ -84,30 +92,21 @@ for row in range(NUM_GUESSES):
 
 
 submit_box = ctk.CTkEntry(root,
-                              placeholder_text='Guess word',
-                              fg_color='transparent',
-                              text_color=(BLACK, WHITE))
+                          placeholder_text='Guess word',
+                          fg_color='transparent',
+                          text_color=(BLACK, WHITE))
 submit_box.grid(row=NUM_GUESSES,
-                    column=1,
-                    columnspan=6)
-    
+                column=0,
+                columnspan=4)
+
 guess_button = ctk.CTkButton(master = root,
-                                 text = "Guess",
-                                 command = guess)
+                             text = "Guess",
+                             command = guess)
     
 guess_button.grid(row = NUM_GUESSES,
                   column = 3,
                   columnspan = 6)
     
-displayBox = ctk.CTkTextbox(root)
-displayBox.grid(row = count,
-                column = 0,
-                columnspan = 4,
-                padx = 20,
-                pady = 20,
-                sticky = "nsew"
-                )
-
 
 # If left blank, will autofit
 # existing elements
