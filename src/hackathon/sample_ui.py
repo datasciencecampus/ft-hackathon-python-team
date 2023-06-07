@@ -1,17 +1,4 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Tue Jun  6 14:33:02 2023
-
-@author: hoolov
-"""
-
-# -*- coding: utf-8 -*-
-"""
-Created on Mon May 15 14:43:10 2023
-
-@author: willin6
-"""
-
 import customtkinter as ctk
 
 count = 0
@@ -39,9 +26,9 @@ def guess():
         count = count + 1
         if count > 5:
             root.destroy()
-        
+
         return(count)
-        
+
 
 WORD_LENGTH = 5
 NUM_GUESSES = 6
@@ -102,11 +89,11 @@ submit_box.grid(row=NUM_GUESSES,
 guess_button = ctk.CTkButton(master = root,
                              text = "Guess",
                              command = guess)
-    
+
 guess_button.grid(row = NUM_GUESSES,
                   column = 3,
                   columnspan = 6)
-    
+
 
 # If left blank, will autofit
 # existing elements
