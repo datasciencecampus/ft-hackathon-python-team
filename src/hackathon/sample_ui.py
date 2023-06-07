@@ -19,29 +19,29 @@ count = 0
 def guess():
     global count
     word = submit_box.get().upper()
-    
-    for i in range(len(word)):
-        displayBox = ctk.CTkTextbox(root,
-                                  height=40,
-                                  width=40,
-                                  fg_color='transparent',
-                                  border_color=(BLACK, WHITE)
-                                  )
-        displayBox.grid(row = count,
-                        column = i,
-                        columnspan = 1,
-                        padx = 20,
-                        pady = 20,
-                       # sticky = "nsew"
-                        )
-     #   displayBox.delete("0.0","200.0")
-        displayBox.insert("0.0",word[i])
-    count = count + 1
-    if count > 5:
-        root.destroy()
-    
-    return(count)
-    
+    if len(word) == 5:
+        for i in range(len(word)):
+            displayBox = ctk.CTkTextbox(root,
+                                      height=40,
+                                      width=40,
+                                      fg_color='transparent',
+                                      border_color=(BLACK, WHITE)
+                                      )
+            displayBox.grid(row = count,
+                            column = i,
+                            columnspan = 1,
+                            padx = 20,
+                            pady = 20,
+                           # sticky = "nsew"
+                            )
+         #   displayBox.delete("0.0","200.0")
+            displayBox.insert("0.0",word[i])
+        count = count + 1
+        if count > 5:
+            root.destroy()
+        
+        return(count)
+        
 
 WORD_LENGTH = 5
 NUM_GUESSES = 6
