@@ -3,7 +3,7 @@ import customtkinter as ctk
 
 count = 0
 
-def guess():
+def guess(event):
     global count
     word = submit_box.get().upper()
     if len(word) == 5:
@@ -94,6 +94,9 @@ guess_button.grid(row = NUM_GUESSES,
                   column = 3,
                   columnspan = 6)
 
+# Make pressing enter do the same thing
+# as clicking the Submit guess button
+root.bind('<Return>', guess)
 
 # If left blank, will autofit
 # existing elements
