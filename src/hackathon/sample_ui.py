@@ -3,7 +3,7 @@ import customtkinter as ctk
 
 count = 0
 
-def guess(event):
+def guess():
     global count
     word = submit_box.get().upper()
     if len(word) == 5:
@@ -88,7 +88,7 @@ submit_box.grid(row=NUM_GUESSES,
 
 guess_button = ctk.CTkButton(master = root,
                              text = "Guess",
-                             command = guess)
+                             command = lambda: guess())
 
 guess_button.grid(row = NUM_GUESSES,
                   column = 3,
