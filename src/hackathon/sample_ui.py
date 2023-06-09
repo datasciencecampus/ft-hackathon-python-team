@@ -1,33 +1,51 @@
 # -*- coding: utf-8 -*-
+
+# %% Imports
 import customtkinter as ctk
+from src.hackathon.utils.words import word_def_pair, get_definition
+
+# %% Functions
+
+# TODO: tidy this up
+target = word_def_pair(5)
+target_word = target[0].upper()
+target_def = target[1]
 
 count = 0
-
+print(target_word)
 def guess():
     global count
     word = submit_box.get().upper()
-    if len(word) == 5:
-        for i in range(len(word)):
-            displayBox = ctk.CTkTextbox(root,
-                                      height=40,
-                                      width=40,
-                                      fg_color='transparent',
-                                      border_color=(BLACK, WHITE)
-                                      )
-            displayBox.grid(row = count,
-                            column = i,
-                            columnspan = 1,
-                            padx = 20,
-                            pady = 20,
-                           # sticky = "nsew"
-                            )
-         #   displayBox.delete("0.0","200.0")
-            displayBox.insert("0.0",word[i])
-        count = count + 1
-        if count > 5:
-            root.destroy()
 
-        return(count)
+    # PLACEHOLDER - close if word right
+    if word == target_word:
+        print('yay')
+        root.destroy()
+
+    if not get_definition(word):
+        print(f'{word} Not an English word')
+
+    else:
+        if len(word) == 5:
+            for i in range(len(word)):
+                displayBox = ctk.CTkTextbox(root,
+                                            height=40,
+                                            width=40,
+                                            fg_color='transparent',
+                                            border_color=(BLACK, WHITE)
+                                            )
+                displayBox.grid(row = count,
+                                column = i,
+                                columnspan = 1,
+                                padx = 20,
+                                pady = 20,
+                                # sticky = "nsew"
+                                )
+                #   displayBox.delete("0.0","200.0")
+                displayBox.insert("0.0",word[i])
+            count = count + 1
+            if count > 5:
+                root.destroy()
 
 
 WORD_LENGTH = 5
@@ -47,8 +65,6 @@ root = ctk.CTk()
 
 # Window name
 root.title("Team FinTrans Wordle")
-
-
 
 # Generate 5x6 grid
 for row in range(NUM_GUESSES):
@@ -88,7 +104,7 @@ submit_box.grid(row=NUM_GUESSES,
 
 guess_button = ctk.CTkButton(master = root,
                              text = "Guess",
-                             command = lambda: guess())
+                             command = lambda event: guess())
 
 guess_button.grid(row = NUM_GUESSES,
                   column = 3,
@@ -96,7 +112,7 @@ guess_button.grid(row = NUM_GUESSES,
 
 # Make pressing enter do the same thing
 # as clicking the Submit guess button
-root.bind('<Return>', guess)
+root.bind('<Return>', lambda event: guess())
 
 # If left blank, will autofit
 # existing elements
