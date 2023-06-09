@@ -55,13 +55,14 @@ def word_def_pair(word_length=5):
 
     """
 
+    # Give the word only if a definition for it
+    # has been found
     definition = None
     while not definition:
         word = get_word(word_length)
         definition = get_definition(word)
 
     return (word, definition)
-
 
 
 #%% Example and testing
