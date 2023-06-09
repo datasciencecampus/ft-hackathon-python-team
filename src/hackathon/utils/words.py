@@ -3,8 +3,8 @@ import nltk
 import random
 
 #%% Downloads
-nltk.download('wordnet')
-nltk.download('words')
+nltk.download('wordnet', quiet=True)
+nltk.download('words', quiet=True)
 
 #%% Functions
 def get_word(word_length):
