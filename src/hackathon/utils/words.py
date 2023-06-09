@@ -7,21 +7,21 @@ nltk.download('wordnet')
 nltk.download('words')
 
 #%% Functions
-def random_word():
+def get_word(word_length):
     """
-    Generate a random five letter word from the English language corpus.
+    Generate a random {word_length} letter word from the English language corpus.
 
     Returns
     -------
     str:
-        Random five letter word.
+        Random {word_length} letter word.
 
     """
     english_words = words.words()
-    answer = [word for word in english_words if len(word) == 5]
+    answer = [word for word in english_words if len(word) == word_length]
     return random.choice(answer)
 
-def return_word_definition(word):
+def get_definition(word):
     """
     Returns the definition of a word using wordnet.
 
@@ -41,9 +41,30 @@ def return_word_definition(word):
         word_name = word_syonym_set[0]
         return word_name.definition()
     else:
-        return (f"No definition available for {word}")
+        return
+
+def word_def_pair(word_length=5):
+    """
+    Get word-definition as a tuple
+
+    Args:
+        word_length (int, optional): length of word. Defaults to 5.
+
+    Returns:
+        tuple: word-definition pair.
+
+    """
+
+    definition = None
+    while not definition:
+        word = get_word(word_length)
+        definition = get_definition(word)
+
+    return (word, definition)
+
+
 
 #%% Example and testing
 if __name__== '__main__':
-    word = random_word()
-    print(f"Hocus pocus randomus wordus: {word} \n Definition: {return_word_definition(word)}")
+    word = get_word()
+    print(f"Hocus pocus randomus wordus: {word} \n Definition: {get_definition(word)}")
