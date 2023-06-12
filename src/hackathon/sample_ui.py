@@ -98,14 +98,15 @@ sidebar.grid(row=0,
 boss_switch = ctk.StringVar(value='no')
 boss_watch = ctk.CTkSwitch(sidebar,
                            text="Boss is in?",
-                           command=lambda: boss_is_watching(boss_switch,
-                                                            root,
-                                                            ICON_PATH),
                            variable=boss_switch,
                            onvalue="yes",
                            offvalue="no",
                            border_color=(WHITE, BLACK),
-                           bg_color='transparent')
+                           bg_color='transparent',
+                           command=lambda: boss_is_watching(boss_switch,
+                                                            root,
+                                                            ICON_PATH),
+                           )
 
 boss_watch.grid(row=NUM_GUESSES+2, column=0, padx=20, pady=0)
 # Text above option menu
@@ -130,7 +131,11 @@ theme = ctk.CTkSwitch(sidebar,
                       bg_color='transparent')
 theme.select()
 
-theme.grid(row=NUM_GUESSES+1, column=0, padx=20, pady=(10, 10), sticky='s')
+theme.grid(row=NUM_GUESSES+1,
+           column=0,
+           padx=20,
+           pady=(10, 10),
+           sticky='s')
 
 
 # =============================================================================
@@ -140,7 +145,10 @@ theme.grid(row=NUM_GUESSES+1, column=0, padx=20, pady=(10, 10), sticky='s')
 main_frame = ctk.CTkFrame(root,
                           fg_color='transparent',
                           border_color=(BLACK, WHITE))
-main_frame.grid(row=0, column=1, columnspan=WORD_LENGTH, rowspan=NUM_GUESSES)
+main_frame.grid(row=0,
+                column=1,
+                columnspan=WORD_LENGTH,
+                rowspan=NUM_GUESSES)
 
 # Generate 5x6 grid
 for row in range(NUM_GUESSES):
