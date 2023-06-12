@@ -104,7 +104,7 @@ submit_box.grid(row=NUM_GUESSES,
 
 guess_button = ctk.CTkButton(master = root,
                              text = "Guess",
-                             command = lambda event: guess())
+                             command = guess)
 
 guess_button.grid(row = NUM_GUESSES,
                   column = 3,
