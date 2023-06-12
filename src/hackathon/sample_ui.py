@@ -5,6 +5,8 @@ import customtkinter as ctk
 from src.hackathon.utils.words import word_def_pair, get_definition
 from src.hackathon.utils.quit import quit_game
 from src.hackathon.utils.in_work_mode import boss_is_watching
+from src.hackathon.utils.appearance import change_appearance
+from src.hackathon.utils.scaling import change_scaling
 # %% Functions
 
 # TODO: tidy this up
@@ -29,7 +31,7 @@ def guess():
     else:
         if len(word) == 5:
             for i in range(len(word)):
-                displayBox = ctk.CTkTextbox(root,
+                displayBox = ctk.CTkTextbox(main_frame,
                                             height=40,
                                             width=40,
                                             fg_color='transparent',
@@ -127,6 +129,15 @@ theme.select()
 theme.grid(row=NUM_GUESSES+1, column=0, padx=20, pady=(10, 10), sticky='s')
 
 
+# =============================================================================
+# PANE 1
+# =============================================================================
+# This frame holds main game
+main_frame = ctk.CTkFrame(root,
+                          fg_color='transparent',
+                          border_color=(BLACK, WHITE))
+main_frame.grid(row=0, column=1, columnspan=WORD_LENGTH, rowspan=NUM_GUESSES)
+
 # Generate 5x6 grid
 for row in range(NUM_GUESSES):
     for column in range(WORD_LENGTH):
@@ -134,7 +145,7 @@ for row in range(NUM_GUESSES):
         # Frame needed to then place text boxes in
         # Corner radius defines the roundness
         # of the box corners
-        text_frame = ctk.CTkFrame(root,
+        text_frame = ctk.CTkFrame(main_frame,
                                   height=80,
                                   width=80,
                                   fg_color='transparent',
@@ -155,7 +166,7 @@ for row in range(NUM_GUESSES):
                             font=('Arial',24))
 
 
-submit_box = ctk.CTkEntry(root,
+submit_box = ctk.CTkEntry(main_frame,
                           placeholder_text='Guess word',
                           fg_color='transparent',
                           text_color=(BLACK, WHITE))
@@ -163,7 +174,7 @@ submit_box.grid(row=NUM_GUESSES,
                 column=0,
                 columnspan=4)
 
-guess_button = ctk.CTkButton(master = root,
+guess_button = ctk.CTkButton(master = main_frame,
                              text = "Guess",
                              command = guess)
 
@@ -181,6 +192,7 @@ root.geometry()
 
 # Static initial size
 # root.geometry(f"{1100}x{580}")
-
+# Minimum size
+root.minsize(500, 200)
 # Display window
 root.mainloop()
