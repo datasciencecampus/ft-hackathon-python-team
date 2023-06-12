@@ -3,7 +3,7 @@
 # %% Imports
 import customtkinter as ctk
 from src.hackathon.utils.words import word_def_pair, get_definition
-
+from src.hackathon.utils.quit import quit_game
 # %% Functions
 
 # TODO: tidy this up
@@ -67,6 +67,8 @@ root = ctk.CTk()
 # Window name
 root.title("Team FinTrans Wordle")
 
+# What to do when the X is clicked
+root.protocol('WM_DELETE_WINDOW', lambda: quit_game(root))
 # Generate 5x6 grid
 for row in range(NUM_GUESSES):
     for column in range(WORD_LENGTH):
