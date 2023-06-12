@@ -7,6 +7,8 @@ from src.hackathon.utils.quit import quit_game
 from src.hackathon.utils.in_work_mode import boss_is_watching
 from src.hackathon.utils.appearance import change_appearance
 from src.hackathon.utils.scaling import change_scaling
+from src.hackathon.utils.logic import check_placement
+
 # %% Functions
 
 # TODO: tidy this up
@@ -31,20 +33,12 @@ def guess():
     else:
         if len(word) == 5:
             for idx, letter in enumerate(word):
-                displayBox = ctk.CTkTextbox(main_frame,
-                                            height=40,
-                                            width=40,
-                                            fg_color='transparent',
-                                            border_color=(BLACK, WHITE)
-                                            )
-                displayBox.grid(row = count,
-                                column = idx,
-                                columnspan = 1,
-                                padx = 20,
-                                pady = 20,
-                                )
 
-                displayBox.insert("0.0", letter)
+                box_colour = check_placement(letter, idx, target_word)
+                text_boxes[(count, idx)].insert("0.0", letter)
+                text_boxes[(count, idx)].configure(bg_color=box_colour)
+                text_frames[(count, idx)].configure(fg_color=box_colour)
+
             count = count + 1
             if count > 5:
                 root.destroy()
@@ -188,18 +182,21 @@ for row in range(NUM_GUESSES):
 
         text_frames[(row, column)] = text_frame
         # Text box
-        text = ctk.CTkTextbox(main_frame,
-                                    height=40,
-                                    width=40,
-                                    fg_color='transparent',
-                                    border_color=(BLACK, WHITE)
-                                    )
+        text = ctk.CTkTextbox(text_frame,
+                              height=40,
+                              width=40,
+                              fg_color='transparent',
+                              border_color=(BLACK, WHITE),
+                              corner_radius=0,
+                              font=('Droid', 28)
+                              )
 
         text.grid(row=row,
                   column=column,
-                  padx=25,
+                  padx=22,
                   pady=20)
 
+        text_boxes[(row, column)] = text
 
 submit_box = ctk.CTkEntry(main_frame,
                           placeholder_text='Guess word',
