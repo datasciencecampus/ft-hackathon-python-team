@@ -58,6 +58,9 @@ NUM_GUESSES = 6
 BLACK = '#000000'
 WHITE = '#FFFFFF'
 
+# Relative path to icons (should? work on any machine)
+ICON_PATH = r'./src/hackathon/icons'
+
 # Inherit system default (light/dark mode)
 ctk.set_appearance_mode("System")
 
@@ -96,7 +99,9 @@ sidebar.grid(row=0,
 boss_switch = ctk.StringVar(value='no')
 boss_watch = ctk.CTkSwitch(sidebar,
                            text="Boss is in?",
-                           command=lambda: boss_is_watching(boss_switch),
+                           command=lambda: boss_is_watching(boss_switch,
+                                                            root,
+                                                            ICON_PATH),
                            variable=boss_switch,
                            onvalue="yes",
                            offvalue="no",
