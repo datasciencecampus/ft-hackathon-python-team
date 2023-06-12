@@ -54,6 +54,10 @@ def guess():
 WORD_LENGTH = 5
 NUM_GUESSES = 6
 
+RED = '#BB0A1E'
+YELLOW = '#B59F3B'
+GREEN = '#538D4E'
+GREY = '#3A3A3C'
 BLACK = '#000000'
 WHITE = '#FFFFFF'
 
@@ -150,6 +154,12 @@ main_frame.grid(row=0,
                 columnspan=WORD_LENGTH,
                 rowspan=NUM_GUESSES)
 
+
+# Need location of text frames
+# to update bg colours later
+text_frames = {}
+text_boxes = {}
+
 # Generate 5x6 grid
 for row in range(NUM_GUESSES):
     for column in range(WORD_LENGTH):
@@ -172,10 +182,23 @@ for row in range(NUM_GUESSES):
                         padx=1,
                         pady=3)
 
+        # Prevent frame shrinking to fit
+        # contents
+        text_frame.grid_propagate(False)
+
+        text_frames[(row, column)] = text_frame
         # Text box
-        text = ctk.CTkEntry(text_frame,
-                            text_color=(BLACK, WHITE),
-                            font=('Arial',24))
+        text = ctk.CTkTextbox(main_frame,
+                                    height=40,
+                                    width=40,
+                                    fg_color='transparent',
+                                    border_color=(BLACK, WHITE)
+                                    )
+
+        text.grid(row=row,
+                  column=column,
+                  padx=25,
+                  pady=20)
 
 
 submit_box = ctk.CTkEntry(main_frame,
