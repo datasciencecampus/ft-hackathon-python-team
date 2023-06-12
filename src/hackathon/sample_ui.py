@@ -42,7 +42,7 @@ def guess():
             count = count + 1
             if count > 5:
                 root.destroy()
-    submit_box.delete(0,5)
+    submit_box.delete(0, ctk.END)
 
 
 WORD_LENGTH = 5
