@@ -30,7 +30,7 @@ def guess():
 
     else:
         if len(word) == 5:
-            for i in range(len(word)):
+            for idx, letter in enumerate(word):
                 displayBox = ctk.CTkTextbox(main_frame,
                                             height=40,
                                             width=40,
@@ -38,14 +38,13 @@ def guess():
                                             border_color=(BLACK, WHITE)
                                             )
                 displayBox.grid(row = count,
-                                column = i,
+                                column = idx,
                                 columnspan = 1,
                                 padx = 20,
                                 pady = 20,
-                                # sticky = "nsew"
                                 )
-                #   displayBox.delete("0.0","200.0")
-                displayBox.insert("0.0",word[i])
+
+                displayBox.insert("0.0", letter)
             count = count + 1
             if count > 5:
                 root.destroy()
