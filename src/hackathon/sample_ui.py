@@ -207,7 +207,7 @@ theme.grid(row=NUM_GUESSES+1,
            sticky='s')
 
 open_close = ctk.CTkButton(main_frame,
-                           text='>>',
+                           text='<<',
                            command=animated_panel.animate,
                            font=('Droid', 12),
                            corner_radius=5,
