@@ -16,11 +16,13 @@ from PIL import Image
 target = word_def_pair(5)
 target_word = target[0].upper()
 target_def = target[1]
-
-count = 0
 print(target_word)
+
+# Initialise guess
+guess_number = 1
+
 def guess():
-    global count
+    global guess_number
     word = submit_box.get().upper()
 
     # PLACEHOLDER - close if word right
@@ -32,19 +34,19 @@ def guess():
         print(f'{word} Not an English word')
 
     else:
-        if len(word) == 5:
+        if len(word) == WORD_LENGTH:
             for idx, letter in enumerate(word):
 
                 box_colour = check_placement(letter, idx, target_word)
-                text_boxes[(count, idx)].insert("0.0", letter)
-                text_boxes[(count, idx)].configure(bg_color=box_colour)
-                text_frames[(count, idx)].configure(fg_color=box_colour)
+                text_boxes[(guess_number-1, idx)].insert("0.0", letter)
+                root.after(10, text_frames[(guess_number-1, idx)].configure(fg_color=box_colour))
+                text_boxes[(guess_number-1, idx)].configure(bg_color=box_colour)
 
-            count = count + 1
-            if count > 5:
-                root.destroy()
-    submit_box.delete(0, ctk.END)
-
+            guess_number += 1
+            if guess_number > NUM_GUESSES:
+                quit_game(root)
+            else:
+                submit_box.delete(0, 'end')
 
 WORD_LENGTH = 5
 NUM_GUESSES = 6
