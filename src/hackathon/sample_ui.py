@@ -78,23 +78,6 @@ root.title("Team FinTrans Wordle")
 root.grid_columnconfigure(1, weight=1)
 root.grid_rowconfigure((0, 1, 2), weight=1)
 
-# =============================================================================
-# PANE 1
-# =============================================================================
-# This frame holds config options
-
-# sidebar = ctk.CTkFrame(root, width=50)
-
-# # It needs a weight in order to do stuff in
-# sidebar.grid_rowconfigure(0, weight=1)
-# sidebar.grid_columnconfigure(0, weight=1)
-
-# sidebar.grid(row=0,
-#              column=0,
-#              rowspan=10,
-#              sticky='nsew')
-
-
 
 # =============================================================================
 # PANE 1
@@ -172,10 +155,14 @@ guess_button = ctk.CTkButton(master = main_frame,
 
 guess_button.grid(row = NUM_GUESSES,
                   column = 3,
-                  columnspan = 6)
+                  columnspan = 2)
 
+# =============================================================================
+# PANE 4
+# =============================================================================
+# This frame holds options
 
-animated_panel = SlidePanel(main_frame, 1.0, 0.7)
+animated_panel = SlidePanel(main_frame, 1.0, 0.5)
 # Initial value
 boss_switch = ctk.StringVar(value='no')
 boss_watch = ctk.CTkSwitch(animated_panel,
@@ -223,10 +210,10 @@ open_close = ctk.CTkButton(main_frame,
                            text='>>',
                            command=animated_panel.animate,
                            font=('Droid', 12),
-                            corner_radius=5,
+                           corner_radius=5,
                            width=25,
                            height=25)
-open_close.grid(row=NUM_GUESSES, column=0)
+open_close.grid(row=NUM_GUESSES, column=5)
 open_close.grid_propagate(False)
 # Make pressing enter do the same thing
 # as clicking the Submit guess button
