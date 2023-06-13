@@ -9,7 +9,7 @@ from src.hackathon.utils.appearance import change_appearance
 from src.hackathon.utils.scaling import change_scaling
 from src.hackathon.utils.logic import check_placement
 from src.hackathon.utils.slide_panel import SlidePanel
-
+from PIL import Image
 # %% Functions
 
 # TODO: tidy this up
@@ -206,15 +206,19 @@ theme.grid(row=NUM_GUESSES+1,
            pady=(10, 10),
            sticky='s')
 
+hamburger = ctk.CTkImage(light_image=Image.open(rf'{ICON_PATH}/hamburger_menu_light.ico'))
 open_close = ctk.CTkButton(main_frame,
-                           text='<<',
+                           image=hamburger,
+                           text="",
                            command=animated_panel.animate,
                            font=('Droid', 12),
-                           corner_radius=5,
+                           corner_radius=8,
                            width=25,
                            height=25)
-open_close.grid(row=NUM_GUESSES, column=5)
+
+open_close.grid(row=NUM_GUESSES, column=5, padx=10)
 open_close.grid_propagate(False)
+# open_close.configure(r'D:/FinTrans/github_repos/hackathon/src/hackathon/icons/hamburger_menu_light.ico')
 # Make pressing enter do the same thing
 # as clicking the Submit guess button
 root.bind('<Return>', lambda event: guess())
