@@ -8,6 +8,7 @@ from src.hackathon.utils.in_work_mode import boss_is_watching
 from src.hackathon.utils.appearance import change_appearance
 from src.hackathon.utils.scaling import change_scaling
 from src.hackathon.utils.logic import check_placement
+from src.hackathon.utils.slide_panel import SlidePanel
 
 # %% Functions
 
@@ -81,59 +82,18 @@ root.grid_rowconfigure((0, 1, 2), weight=1)
 # PANE 1
 # =============================================================================
 # This frame holds config options
-sidebar = ctk.CTkFrame(root, width=50)
 
-# It needs a weight in order to do stuff in
-sidebar.grid_rowconfigure(0, weight=1)
-sidebar.grid_columnconfigure(0, weight=1)
+# sidebar = ctk.CTkFrame(root, width=50)
 
-sidebar.grid(row=0,
-             column=0,
-             rowspan=10,
-             sticky='nsew')
+# # It needs a weight in order to do stuff in
+# sidebar.grid_rowconfigure(0, weight=1)
+# sidebar.grid_columnconfigure(0, weight=1)
 
-# Initial value
-boss_switch = ctk.StringVar(value='no')
-boss_watch = ctk.CTkSwitch(sidebar,
-                           text="Boss is in?",
-                           variable=boss_switch,
-                           onvalue="yes",
-                           offvalue="no",
-                           border_color=(WHITE, BLACK),
-                           bg_color='transparent',
-                           command=lambda: boss_is_watching(boss_switch,
-                                                            root,
-                                                            ICON_PATH),
-                           )
+# sidebar.grid(row=0,
+#              column=0,
+#              rowspan=10,
+#              sticky='nsew')
 
-boss_watch.grid(row=NUM_GUESSES+2, column=0, padx=20, pady=0)
-# Text above option menu
-ui_scale = ctk.CTkLabel(sidebar, text='Scaling:', anchor='w')
-ui_scale.grid(row=NUM_GUESSES-1, column=0, padx=20, pady=10)
-# Clickable options
-ui_scale_options = ctk.CTkOptionMenu(sidebar,
-                                     values=[f'{i}%' for i in range(80, 130, 10)],
-                                     command = change_scaling)
-ui_scale_options.grid(row=NUM_GUESSES, column=0, padx=20, pady=0)
-ui_scale_options.set('100%')
-
-
-switch_var = ctk.StringVar(value="on")
-theme = ctk.CTkSwitch(sidebar,
-                      text="Dark mode",
-                      command=lambda: change_appearance(switch_var),
-                      variable=switch_var,
-                      onvalue="Dark",
-                      offvalue="Light",
-                      border_color=(WHITE, BLACK),
-                      bg_color='transparent')
-theme.select()
-
-theme.grid(row=NUM_GUESSES+1,
-           column=0,
-           padx=20,
-           pady=(10, 10),
-           sticky='s')
 
 
 # =============================================================================
@@ -188,7 +148,7 @@ for row in range(NUM_GUESSES):
                               fg_color='transparent',
                               border_color=(BLACK, WHITE),
                               corner_radius=0,
-                              font=('Droid', 28)
+                              font=('Droid', 28),
                               )
 
         text.grid(row=row,
@@ -214,6 +174,60 @@ guess_button.grid(row = NUM_GUESSES,
                   column = 3,
                   columnspan = 6)
 
+
+animated_panel = SlidePanel(main_frame, 1.0, 0.7)
+# Initial value
+boss_switch = ctk.StringVar(value='no')
+boss_watch = ctk.CTkSwitch(animated_panel,
+                           text="Boss is in?",
+                           variable=boss_switch,
+                           onvalue="yes",
+                           offvalue="no",
+                           border_color=(WHITE, BLACK),
+                           bg_color='transparent',
+                           command=lambda: boss_is_watching(boss_switch,
+                                                            root,
+                                                            ICON_PATH),
+                           )
+
+boss_watch.grid(row=NUM_GUESSES+2, column=0, padx=20, pady=0)
+# Text above option menu
+ui_scale = ctk.CTkLabel(animated_panel, text='Scaling:', anchor='w')
+ui_scale.grid(row=NUM_GUESSES-1, column=0, padx=20, pady=10)
+# Clickable options
+ui_scale_options = ctk.CTkOptionMenu(animated_panel,
+                                     values=[f'{i}%' for i in range(80, 130, 10)],
+                                     command = change_scaling)
+ui_scale_options.grid(row=NUM_GUESSES, column=0, padx=20, pady=0)
+ui_scale_options.set('100%')
+
+
+switch_var = ctk.StringVar(value="on")
+theme = ctk.CTkSwitch(animated_panel,
+                      text="Dark mode",
+                      command=lambda: change_appearance(switch_var),
+                      variable=switch_var,
+                      onvalue="Dark",
+                      offvalue="Light",
+                      border_color=(WHITE, BLACK),
+                      bg_color='transparent')
+theme.select()
+
+theme.grid(row=NUM_GUESSES+1,
+           column=0,
+           padx=20,
+           pady=(10, 10),
+           sticky='s')
+
+open_close = ctk.CTkButton(main_frame,
+                           text='>>',
+                           command=animated_panel.animate,
+                           font=('Droid', 12),
+                            corner_radius=5,
+                           width=25,
+                           height=25)
+open_close.grid(row=NUM_GUESSES, column=0)
+open_close.grid_propagate(False)
 # Make pressing enter do the same thing
 # as clicking the Submit guess button
 root.bind('<Return>', lambda event: guess())
