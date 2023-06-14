@@ -22,5 +22,5 @@ def check_placement(letter, idx, target):
         color = YELLOW
     elif letter not in target:
         print(f'{letter} not in word')
-        color = RED
+        color = GREY
     return color

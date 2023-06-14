@@ -138,6 +138,7 @@ for row in range(NUM_GUESSES):
                               border_color=(BLACK, WHITE),
                               corner_radius=0,
                               font=('Droid', 28),
+                              text_color=WHITE,
                               )
 
         text.grid(row=row,
