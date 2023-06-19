@@ -232,15 +232,16 @@ theme.grid(row=NUM_GUESSES+1,
            pady=(10, 10),
            sticky='s')
 
-# Hamburger menu logo
-hamburger = ctk.CTkImage(light_image=Image.open(rf'{ICON_PATH}/hamburger_menu_light.ico'))
+# settings_cogs
+cogs = ctk.CTkImage(light_image=Image.open(rf'{ICON_PATH}/settings_light_theme.ico'),
+                    dark_image=Image.open(rf'{ICON_PATH}/settings_dark_theme.ico'))
 open_close = ctk.CTkButton(main_frame,
-                           image=hamburger,
+                           image=cogs,
                            text="",
                            command=animated_panel.animate,
                            font=('Droid', 12),
                            corner_radius=8,
-                           width=25,
+                           width=40,
                            height=25)
 
 open_close.grid(row=NUM_GUESSES, column=5, padx=10)
