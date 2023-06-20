@@ -12,10 +12,7 @@ from src.hackathon.utils.logic import check_placement
 from src.hackathon.utils.slide_panel import SlidePanel
 from PIL import Image
 # %% Functions
-# TODO: tidy this up
-target = word_def_pair(5)
-target_word = target[0].upper()
-target_def = target[1]
+target_word, definition = word_def_pair(5)
 print(target_word)
 
 # Initialise guess
@@ -83,7 +80,6 @@ root.title("Team FinTrans Wordle")
 # Weight grid so widgets move nicely
 root.grid_columnconfigure(1, weight=1)
 root.grid_rowconfigure((0, 1, 2), weight=1)
-
 
 # =============================================================================
 # PANE 1
@@ -166,7 +162,7 @@ guess_button.grid(row = NUM_GUESSES,
                   columnspan = 2)
 
 # =============================================================================
-# PANE 4
+# PANE 2
 # =============================================================================
 # This frame holds options
 

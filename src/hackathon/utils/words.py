@@ -19,7 +19,7 @@ def get_word(word_length):
     """
     english_words = words.words()
     answer = [word for word in english_words if len(word) == word_length]
-    return random.choice(answer)
+    return random.choice(answer).upper()
 
 def get_definition(word):
     """
