@@ -4,6 +4,7 @@
 import customtkinter as ctk
 from src.hackathon.utils.words import word_def_pair, get_definition
 from src.hackathon.utils.quit import quit_game
+from src.hackathon.utils.focus import focus_start
 from src.hackathon.utils.in_work_mode import boss_is_watching
 from src.hackathon.utils.appearance import change_appearance
 from src.hackathon.utils.scaling import change_scaling
@@ -11,7 +12,6 @@ from src.hackathon.utils.logic import check_placement
 from src.hackathon.utils.slide_panel import SlidePanel
 from PIL import Image
 # %% Functions
-
 # TODO: tidy this up
 target = word_def_pair(5)
 target_word = target[0].upper()
@@ -251,6 +251,7 @@ open_close.grid_propagate(False)
 # as clicking the Submit guess button
 root.bind('<Return>', lambda event: guess())
 
+root.bind('<FocusIn>', lambda event: focus_start(event=event, app=root, element=submit_box))
 # If left blank, will autofit
 # existing elements
 root.geometry()
@@ -258,6 +259,8 @@ root.geometry()
 # Static initial size
 # root.geometry(f"{1100}x{580}")
 # Minimum size
-root.minsize(500, 200)
+root.minsize(500, 550)
+root.maxsize(500, 550)
 # Display window
 root.mainloop()
+
