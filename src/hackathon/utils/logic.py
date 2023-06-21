@@ -13,47 +13,30 @@ GREY = '#3A3A3C'
 BLACK = '#000000'
 WHITE = '#FFFFFF'
 
-def check_placement(letter, idx, target):
-    if letter == target[idx]:
-        print(f'{letter} is in the correct position')
-        color = GREEN
-    elif letter in target and letter != target[idx]:
-        print(f'{letter} is in the word but in the wrong position')
-        color = YELLOW
-    elif letter not in target:
-        print(f'{letter} not in word')
-        color = GREY
-    return color
 
-def n_letter(word, letter):
-    n = word.count(letter)
-    return n
+def get_result(word, target):
+    w1 = [i for i in word]
+    t1 = [i for i in target]
 
-def check_placement_letter(word, target):
+    output = []
 
-    status = []
-    for idx, letter in enumerate(word):
-        if letter == target[idx]:
-            print(f'{letter} is in the correct position')
-            color = GREEN
-        elif letter in target:
-            if word.count(letter) > 1 and word.count(letter) == target.count(letter):
-                print(f'{letter} is in the word but in the wrong position')
-                color = YELLOW
-            else:
-                print(f'{letter} not in word')
-                color = GREY
-        else:
-            print(f'{letter} not in word')
-            color = GREY
+    for idx, i in enumerate(w1):
+        if w1[idx] == t1[idx]:
+            w1[idx] = '*'
+            t1[idx] = '*'
+            output.append((idx, GREEN,  i))
 
-        status.append((idx, letter, color))
+    # Restart the loop with greens removed
+    for idx, i in enumerate(w1):
+        if i not in ['*',*[letter[2] for letter in output]]:
+            if i in t1:
+                w1[idx] = '-'
+                t1[idx] = '-'
+                output.append((idx, YELLOW, i))
 
-    return status
+    for idx, i in enumerate(w1):
+        if i not in ['*','-']:
+            output.append((idx, GREY, i))
 
-if __name__ == '__main__':
-    word = 'HELLO'
-    target = 'WORLD'
-
-    output = check_placement_letter(word, target)
+    return sorted(output)
 
