@@ -7,7 +7,7 @@ from src.hackathon.utils.quit import quit_game
 from src.hackathon.utils.in_work_mode import boss_is_watching
 from src.hackathon.utils.appearance import change_appearance
 from src.hackathon.utils.scaling import change_scaling
-from src.hackathon.utils.logic import check_placement_letter
+from src.hackathon.utils.logic import get_result
 from src.hackathon.utils.slide_panel import SlidePanel
 from PIL import Image
 # %% Functions
@@ -19,6 +19,7 @@ target_word = target[0].upper()
 target_def = target[1]
 print(target_word)
 
+# target_word = 'WORLD'
 # Initialise guess
 guess_number = 1
 
@@ -38,15 +39,21 @@ def guess():
 
     else:
         if len(word) == WORD_LENGTH:
-            for idx, letter in enumerate(word):
 
-                # Determine if letter correct
-                box_colour = check_placement_letter(word, idx, target_word)
-                text_boxes[(guess_number-1, idx)].insert("0.0", word[idx])
+            status = get_result(word, target_word)
 
-                # Change text box colour after 10ms delay
-                root.after(10, text_frames[(guess_number-1, idx)].configure(fg_color=box_colour))
-                text_boxes[(guess_number-1, idx)].configure(bg_color=box_colour)
+            for result in status:
+
+                pos = result[0]
+                colour = result[1]
+                letter = result[2]
+
+                text_box = text_boxes[(guess_number-1, pos)]
+                text_frame = text_frames[(guess_number-1, pos)]
+
+                text_box.insert("0.0", letter)
+                root.after(150, text_frame.configure(fg_color=colour))
+                text_box.configure(bg_color=colour)
 
             guess_number += 1
             if guess_number > NUM_GUESSES:
