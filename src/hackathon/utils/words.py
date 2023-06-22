@@ -2,12 +2,10 @@ from nltk.corpus import words, wordnet
 import nltk
 import random
 
-#%% Downloads
-nltk.download('wordnet', quiet=True)
-nltk.download('words', quiet=True)
-
 #%% Functions
-def get_word(word_length):
+
+
+def get_word(word_length: int=5)-> str:
     """
     Generate a random {word_length} letter word from the English language corpus.
 
@@ -17,11 +15,24 @@ def get_word(word_length):
         Random {word_length} letter word.
 
     """
-    english_words = words.words()
-    answer = [word for word in english_words if len(word) == word_length]
-    return random.choice(answer).upper()
+    if word_length == 5:
+        path = r'./docs/word_list.txt'
+        with open(path, 'r') as file:
+            target = random.choice(file.read().split('\n')).upper()
+    else:
+        # No need to download if sticking with default
+        nltk.download('wordnet', quiet=True)
+        nltk.download('words', quiet=True)
+        wordlist = [word for word in words.words() if len(word) == word_length]
 
-def get_definition(word):
+        if wordlist:
+            target = random.choice(wordlist).upper()
+        else:
+            raise IndexError(f'No words have length {word_length}')
+
+    return target
+
+def get_definition(word: str)->str:
     """
     Returns the definition of a word using wordnet.
 
@@ -43,7 +54,7 @@ def get_definition(word):
     else:
         return
 
-def word_def_pair(word_length=5):
+def word_def_pair(word_length: int=5)-> tuple:
     """
     Get word-definition as a tuple
 
