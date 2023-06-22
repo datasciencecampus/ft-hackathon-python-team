@@ -13,30 +13,42 @@ GREY = '#3A3A3C'
 BLACK = '#000000'
 WHITE = '#FFFFFF'
 
+def get_colours(word: str, target: str)-> list:
+    """
+    Compare user-submitted word
+    against target and give colour
+    based on placement
 
-def get_result(word, target):
-    w1 = [i for i in word]
-    t1 = [i for i in target]
+    Args:
+        word (str): User's guess.
+        target (str): Target word.
 
-    output = []
+    Returns:
+        lst_clue (list): Colours of each letter.
 
-    for idx, i in enumerate(w1):
-        if w1[idx] == t1[idx]:
-            w1[idx] = '*'
-            t1[idx] = '*'
-            output.append((idx, GREEN,  i))
+    """
 
-    # Restart the loop with greens removed
-    for idx, i in enumerate(w1):
-        if i not in ['*',*[letter[2] for letter in output]]:
-            if i in t1:
-                w1[idx] = '-'
-                t1[idx] = '-'
-                output.append((idx, YELLOW, i))
+    # Easiest if word is converted to a list
+    lst_target = list(target)
 
-    for idx, i in enumerate(w1):
-        if i not in ['*','-']:
-            output.append((idx, GREY, i))
+    # Blank list ready to be populated with colours
+    colours = ['' for i in target]
 
-    return sorted(output)
+    for i, letter in enumerate(word):
+        # First check for exact matches
+        if letter == target[i]:
+            colours[i] = GREEN
+            # Remove exact matches from word so not double-counted
+            lst_target[i] = None
 
+    for i, letter in enumerate(word):
+
+        if colours[i] == '':
+            if letter in lst_target:
+                colours[i] = YELLOW
+                # Remove partial match so not double-counted
+                lst_target.remove(letter)
+            else:
+                # Everything else must be grey by default
+                colours[i] = GREY
+    return colours
