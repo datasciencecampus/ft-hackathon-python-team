@@ -7,7 +7,7 @@ from src.hackathon.utils.quit import quit_game
 from src.hackathon.utils.in_work_mode import boss_is_watching
 from src.hackathon.utils.appearance import change_appearance
 from src.hackathon.utils.scaling import change_scaling
-from src.hackathon.utils.logic import get_result
+from src.hackathon.utils.logic import get_colours
 from src.hackathon.utils.slide_panel import SlidePanel
 from PIL import Image
 # %% Functions
@@ -19,7 +19,6 @@ target_word = target[0].upper()
 target_def = target[1]
 print(target_word)
 
-# target_word = 'WORLD'
 # Initialise guess
 guess_number = 1
 
@@ -40,13 +39,13 @@ def guess():
     else:
         if len(word) == WORD_LENGTH:
 
-            status = get_result(word, target_word)
+            status = get_colours(word, target_word)
 
-            for result in status:
+            for idx, result in enumerate(status):
 
-                pos = result[0]
-                colour = result[1]
-                letter = result[2]
+                pos = idx
+                colour = status[idx]
+                letter = word[idx]
 
                 text_box = text_boxes[(guess_number-1, pos)]
                 text_frame = text_frames[(guess_number-1, pos)]
