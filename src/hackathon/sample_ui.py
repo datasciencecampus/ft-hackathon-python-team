@@ -4,6 +4,7 @@
 import customtkinter as ctk
 from src.hackathon.utils.words import word_def_pair, get_definition
 from src.hackathon.utils.quit import quit_game
+from src.hackathon.utils.focus import focus_start
 from src.hackathon.utils.in_work_mode import boss_is_watching
 from src.hackathon.utils.appearance import change_appearance
 from src.hackathon.utils.scaling import change_scaling
@@ -11,12 +12,7 @@ from src.hackathon.utils.logic import get_colours
 from src.hackathon.utils.slide_panel import SlidePanel
 from PIL import Image
 # %% Functions
-
-# TODO: tidy this up
-target = word_def_pair(5)
-
-target_word = target[0].upper()
-target_def = target[1]
+target_word, definition = word_def_pair(5)
 print(target_word)
 
 # Initialise guess
@@ -92,7 +88,6 @@ root.title("Team FinTrans Wordle")
 # Weight grid so widgets move nicely
 root.grid_columnconfigure(1, weight=1)
 root.grid_rowconfigure((0, 1, 2), weight=1)
-
 
 # =============================================================================
 # PANE 1
@@ -175,7 +170,7 @@ guess_button.grid(row = NUM_GUESSES,
                   columnspan = 2)
 
 # =============================================================================
-# PANE 4
+# PANE 2
 # =============================================================================
 # This frame holds options
 
@@ -241,15 +236,16 @@ theme.grid(row=NUM_GUESSES+1,
            pady=(10, 10),
            sticky='s')
 
-# Hamburger menu logo
-hamburger = ctk.CTkImage(light_image=Image.open(rf'{ICON_PATH}/hamburger_menu_light.ico'))
+# settings_cogs
+cogs = ctk.CTkImage(light_image=Image.open(rf'{ICON_PATH}/settings_light_theme.ico'),
+                    dark_image=Image.open(rf'{ICON_PATH}/settings_dark_theme.ico'))
 open_close = ctk.CTkButton(main_frame,
-                           image=hamburger,
+                           image=cogs,
                            text="",
                            command=animated_panel.animate,
                            font=('Droid', 12),
                            corner_radius=8,
-                           width=25,
+                           width=40,
                            height=25)
 
 open_close.grid(row=NUM_GUESSES, column=5, padx=10)
@@ -259,6 +255,7 @@ open_close.grid_propagate(False)
 # as clicking the Submit guess button
 root.bind('<Return>', lambda event: guess())
 
+root.bind('<FocusIn>', lambda event: focus_start(event=event, app=root, element=submit_box))
 # If left blank, will autofit
 # existing elements
 root.geometry()
@@ -266,6 +263,8 @@ root.geometry()
 # Static initial size
 # root.geometry(f"{1100}x{580}")
 # Minimum size
-root.minsize(500, 200)
+root.minsize(500, 550)
+root.maxsize(500, 550)
 # Display window
 root.mainloop()
+
