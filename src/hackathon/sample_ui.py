@@ -30,7 +30,7 @@ def guess():
         root.destroy()
 
     if not get_definition(word):
-        print(f'{word} Not an English word')
+        print(f'{word} not a valid guess')
 
     else:
         if len(word) == WORD_LENGTH:

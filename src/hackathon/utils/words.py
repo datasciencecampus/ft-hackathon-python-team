@@ -21,10 +21,9 @@ def get_word(word_length: int=5)-> str:
         path = r'./docs/word_list.txt'
         with open(path, 'r') as file:
             target = random.choice(file.read().split('\n')).upper()
+
     else:
-
         wordlist = [word for word in words.words() if len(word) == word_length]
-
         if wordlist:
             target = random.choice(wordlist).upper()
         else:
@@ -47,6 +46,14 @@ def get_definition(word: str)->str:
         The definition of the word.
 
     """
+    word = 'words'
+    if len(word) == 5:
+        path = r'./docs/guess_list.txt'
+        with open(path, 'r') as f:
+            content = f.read()
+            if word.upper() not in content:
+                return
+
     word_syonym_set = wordnet.synsets(word)
     if word_syonym_set:
         word_name = word_syonym_set[0]
