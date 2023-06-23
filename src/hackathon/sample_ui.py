@@ -12,7 +12,7 @@ from src.hackathon.utils.logic import get_colours
 from src.hackathon.utils.slide_panel import SlidePanel
 from PIL import Image
 # %% Functions
-target_word, definition = word_def_pair(5)
+target_word, target_definition = word_def_pair(5)
 print(target_word)
 
 # Initialise guess
