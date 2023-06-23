@@ -2,8 +2,10 @@ from nltk.corpus import words, wordnet
 import nltk
 import random
 
+# %% Downloads
+nltk.download('wordnet', quiet=True)
+nltk.download('words', quiet=True)
 #%% Functions
-
 
 def get_word(word_length: int=5)-> str:
     """
@@ -20,9 +22,7 @@ def get_word(word_length: int=5)-> str:
         with open(path, 'r') as file:
             target = random.choice(file.read().split('\n')).upper()
     else:
-        # No need to download if sticking with default
-        nltk.download('wordnet', quiet=True)
-        nltk.download('words', quiet=True)
+
         wordlist = [word for word in words.words() if len(word) == word_length]
 
         if wordlist:
