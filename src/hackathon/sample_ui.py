@@ -210,7 +210,6 @@ theme.grid_propagate(False)
 option_label.grid_propagate(False)
 boss_watch.grid_propagate(False)
 
-
 # %% Start game
 # Make pressing enter do the same thing
 # as clicking the Submit guess button
@@ -229,4 +228,3 @@ root.resizable(False,False)
 
 # Display window
 root.mainloop()
-
