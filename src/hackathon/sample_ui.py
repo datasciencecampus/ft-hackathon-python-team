@@ -7,7 +7,6 @@ from src.hackathon.utils.quit import quit_game
 from src.hackathon.utils.focus import focus_start
 from src.hackathon.utils.in_work_mode import boss_is_watching
 from src.hackathon.utils.appearance import change_appearance
-from src.hackathon.utils.scaling import change_scaling
 from src.hackathon.utils.logic import get_colours
 from src.hackathon.utils.slide_panel import SlidePanel
 from PIL import Image
@@ -66,7 +65,7 @@ GREEN = '#538D4E'
 GREY = '#3A3A3C'
 BLACK = '#000000'
 WHITE = '#FFFFFF'
-
+SPAN = tuple([i for i in range(NUM_GUESSES+2)])
 # Relative path to icons (should? work on any machine)
 ICON_PATH = r'./src/hackathon/icons'
 
@@ -87,7 +86,7 @@ root.title("Team FinTrans Wordle")
 
 # Weight grid so widgets move nicely
 root.grid_columnconfigure(1, weight=1)
-root.grid_rowconfigure((0, 1, 2), weight=1)
+root.grid_rowconfigure(SPAN, weight=1)
 
 # =============================================================================
 # PANE 1
@@ -173,83 +172,81 @@ guess_button.grid(row = NUM_GUESSES,
 # PANE 2
 # =============================================================================
 # This frame holds options
-
+animated = False
 # Panel slides in from the right
 animated_panel = SlidePanel(main_frame, 1.0, 0.5)
+static_panel = ctk.CTkFrame(root, height=550, width=150, fg_color='transparent')
+
+if animated:
+    panel = animated_panel
+else:
+    panel = static_panel
+    panel.grid_propagate(False)
+    panel.grid(row=0)
+    panel.grid_columnconfigure(0, weight=1)
+
+option_label = ctk.CTkLabel(panel,
+                            text='Options',
+                            # anchor='s',
+                            width=50,
+                            )
+option_label.grid(row=0,
+                  padx=20,
+                  )
 # Initial value
 boss_switch = ctk.StringVar(value='no')
 boss_watch = ctk.CTkSwitch(
-    animated_panel,
+    panel,
+    width=110,
     text="Boss is in?",
     variable=boss_switch,
     onvalue="yes",
     offvalue="no",
     border_color=(WHITE, BLACK),
-    bg_color='transparent',
+    # bg_color='transparent',
     command=lambda: boss_is_watching(boss_switch,
                                      root,
                                      ICON_PATH),
     )
 
-boss_watch.grid(row=NUM_GUESSES+2,
-                column=0,
-                padx=20,
-                pady=0)
-# Text above option menu
-ui_scale = ctk.CTkLabel(animated_panel,
-                        text='Scaling:',
-                        anchor='w')
-ui_scale.grid(row=NUM_GUESSES-1,
-              column=0,
-              padx=20,
-              pady=10)
-# Clickable options
-ui_scale_options = ctk.CTkOptionMenu(
-    animated_panel,
-    values=[f'{i}%' for i in range(80, 130, 10)],
-    command = change_scaling)
-ui_scale_options.grid(row=NUM_GUESSES,
-                      column=0,
-                      padx=20,
-                      pady=0)
-
-# Default value
-ui_scale_options.set('100%')
 
 # Default value
 switch_var = ctk.StringVar(value="on")
-
 # Dark/light mode
-theme = ctk.CTkSwitch(animated_panel,
+theme = ctk.CTkSwitch(panel,
+                      width=110,
                       text="Dark mode",
                       command=lambda: change_appearance(switch_var),
                       variable=switch_var,
                       onvalue="Dark",
                       offvalue="Light",
                       border_color=(WHITE, BLACK),
-                      bg_color='transparent')
+                      # bg_color='transparent',
+                      )
 theme.select()
 
-theme.grid(row=NUM_GUESSES+1,
-           column=0,
-           padx=20,
-           pady=(10, 10),
-           sticky='s')
+theme.grid(row=1, column=0, padx=20, pady=10)
+boss_watch.grid(row=2, column=0, padx=20)
+
+theme.grid_propagate(False)
+option_label.grid_propagate(False)
+boss_watch.grid_propagate(False)
 
 # settings_cogs
-cogs = ctk.CTkImage(light_image=Image.open(rf'{ICON_PATH}/settings_light_theme.ico'),
-                    dark_image=Image.open(rf'{ICON_PATH}/settings_dark_theme.ico'))
-open_close = ctk.CTkButton(main_frame,
-                           image=cogs,
-                           text="",
-                           command=animated_panel.animate,
-                           font=('Droid', 12),
-                           corner_radius=8,
-                           width=40,
-                           height=25)
+if animated:
+    cogs = ctk.CTkImage(light_image=Image.open(rf'{ICON_PATH}/settings_light_theme.ico'),
+                        dark_image=Image.open(rf'{ICON_PATH}/settings_dark_theme.ico'))
+    open_close = ctk.CTkButton(main_frame,
+                               image=cogs,
+                               text="",
+                               command=panel.animate,
+                               font=('Droid', 12),
+                               corner_radius=8,
+                               width=40,
+                               height=25)
 
-open_close.grid(row=NUM_GUESSES, column=5, padx=10)
-open_close.grid_propagate(False)
+    open_close.grid(row=NUM_GUESSES, column=5, padx=10)
+    open_close.grid_propagate(False)
 
 # Make pressing enter do the same thing
 # as clicking the Submit guess button
@@ -264,7 +261,7 @@ root.geometry()
 # root.geometry(f"{1100}x{580}")
 # Minimum size
 root.minsize(500, 550)
-root.maxsize(500, 550)
+# root.maxsize(500, 550)
 # Display window
 root.mainloop()
 
