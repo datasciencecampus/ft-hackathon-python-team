@@ -46,7 +46,6 @@ def get_definition(word: str)->str:
         The definition of the word.
 
     """
-    word = 'words'
     if len(word) == 5:
         path = r'./docs/guess_list.txt'
         with open(path, 'r') as f:
