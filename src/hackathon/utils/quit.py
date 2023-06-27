@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
 def quit_game(root):
-    print('Qutting...')
+    print('Peace out homie...')
     # root.quit()
     root.destroy()

@@ -1,5 +1,6 @@
-import pandas as pd
 import customtkinter as ctk
+import tkinter as tk
+from src.hackathon.utils.quit import quit_game
 
 #Structure:
 #- If word guessed
@@ -13,61 +14,62 @@ import customtkinter as ctk
 
 # Word guessed, congrats and quit
 #If/else for correct guess [TO DO]
-
-
+root = ctk.CTk()
+root.title('Message box test')
 #Dialogue box for 'congrats' and quit
 #Create a Tkinter frame
 frame_w = ctk.CTkFrame(root, height = 80,
-                     width = 80,
-                     fg_colour = 'black')
+                      width = 80,
+                      fg_color = 'black')
+frame_w.grid()
+
 #Define stuff
-answer = messagebox.askokcancel("","Congratulations, you guessed correctly!")
+# answer = tk.messagebox.askokcancel("","Congratulations, you guessed correctly!")
 
-#Create a Label
-Label(frame_w, text=answer, font= ('Arial',24)) #.pack() - idk what this does
-frame.mainloop()
+# #Create a Label
+# tk.Label(frame_w, text=answer, font= ('Arial',24)) #.pack() - idk what this does
+# # frame.mainloop()
 
-# Add Button for making selection
-button1_w = Button(frame_w, text="Quit",
-command = quit(), bg="grey")
+# # Add Button for making selection
+button1_w = tk.Button(frame_w, text="Quit", command = lambda a=root: quit_game(a), bg="grey")
 button1_w.grid(row=0, column=1)
 
 
-# Word not guessed, try again or quit
-#If/else for word not guessed after 6 goes [TO DO]
+# # Word not guessed, try again or quit
+# #If/else for word not guessed after 6 goes [TO DO]
 
 
-#If/else for dialogue box choice (try again/quit)
-def choice(option):
-    if option == "Yes"
-    #code here to loop back to start
+# #If/else for dialogue box choice (try again/quit)
+# # def choice(option):
+# #     if option == "Yes"
+# #     #code here to loop back to start
     
-    if option == "No"
-    quit()
+# #     if option == "No"
+# #     quit()
     
-    else:
-    quit() #Could do with just this bit and delete lines 45/6?
+# #     else:
+# #     quit() #Could do with just this bit and delete lines 45/6?
 
-#Create a Tkinter frame
-frame_l = ctk.CTkFrame(root, height = 80,
-                     width = 80,
-                     fg_colour = 'black')
-#Define stuff
-answer = messagebox.askyesno("Question","Word not guessed, would you like to try again?")
-#Create a Label
-Label(frame_l, text=answer, font= ('Arial',24)) #.pack() - idk what this does
-frame.mainloop()
+# #Create a Tkinter frame
+# frame_l = ctk.CTkFrame(root, height = 80,
+#                      width = 80,
+#                      fg_color = 'black')
+# #Define stuff
+# answer = tk.messagebox.askyesno("Question","Word not guessed, would you like to try again?")
+# #Create a Label
+# tk.Label(frame_l, text=answer, font= ('Arial',24)) #.pack() - idk what this does
+# # frame.mainloop()
 
-# Add Button for making selection
-button1_l = Button(frame_l, text="Yes",
-command = lambda: choice("Yes"), bg="grey")
-button1_l.grid(row=0, column=1)
-button2_l = Button(frame_l, text="No",
-command = lambda: choice("No"), bg="grey")
-button2_l.grid(row=0, column=2)
+# # Add Button for making selection
+# button1_l = tk.Button(frame_l, text="Yes",
+# command = lambda: choice("Yes"), bg="grey")
+# button1_l.grid(row=0, column=1)
+# button2_l = tk.Button(frame_l, text="No",
+# command = lambda: choice("No"), bg="grey")
+# button2_l.grid(row=0, column=2)
 
 #To do:
-    
+root.mainloop()
 #Some sort of 'if' and/or 'when' thingy that brings up dialogue box
 #when NUM_GUESSES reaches 6
 
