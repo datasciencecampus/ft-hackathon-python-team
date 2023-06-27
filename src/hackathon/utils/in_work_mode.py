@@ -23,3 +23,5 @@ def boss_is_watching(boss_switch: str,
 def on_unmap(root):
     # Minimize
     root.wm_state('iconic')
+
+
