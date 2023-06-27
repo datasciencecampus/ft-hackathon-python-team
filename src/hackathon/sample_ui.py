@@ -8,6 +8,73 @@ from src.hackathon.utils.in_work_mode import boss_is_watching
 from src.hackathon.utils.appearance import change_appearance
 from src.hackathon.utils.logic import get_colours
 # %% Functions
+def button_clicked(button, colour):
+    """
+    Handler for total animation.
+
+    Args:
+        button (ctk.CTkButton): The button that was clicked.
+        colour (str): The color to be applied to the button.
+    """
+    # Shrink animation
+    shrink_button(button)
+    # Expand animation
+    expand_button(button, colour)
+
+
+def shrink_button(button):
+
+    """
+    Simulate first part of box-flipping
+    by decrementing the box height to a minimum
+
+    Args:
+        button (ctk.CTkButton): The button to be shrunk.
+    """
+
+    # Should be 100 but may be a bit off
+    # due to window-drawing quirks
+    current_height = button.winfo_height()
+    if current_height > 80:
+        current_height = 80
+
+    while current_height > 1:
+        current_height -= 1
+        button.configure(height=current_height)
+        button.update()
+
+    # Workaround for button flexing
+    button.configure(height=1, border_color=THEME)
+
+def expand_button(button, colour):
+    button.configure(fg_color=colour, hover_color=colour)
+
+    current_height = button.winfo_height()
+    if current_height != 1:
+        current_height = 1
+
+    while button.winfo_height() <= 80:
+        current_height += 1
+        button.configure(height=current_height)
+        button.update()
+
+    # Workaround for button flexing
+    button.configure(height=80, border_color=THEME)
+
+
+def check_win(root, word, target_word):
+    """
+    Simulate second part of box-flipping
+    by incrementing the box height to the original height
+    Args:
+        button (ctk.CTkButton): The button to be expanded.
+        colour (str): The color to be applied to the button.
+    """
+    if word == target_word:
+        print('SPLENDID')
+        quit_game(root)
+
+# %% Functions
 def key_pressed(event):
     global LETTER_COUNT, word, GUESS_NUM, ks, target_word
 
@@ -39,7 +106,15 @@ def key_pressed(event):
         if not get_definition(word):
             print(f'{word} not a valid guess')
         else:
-            check_word(word, target_word)
+            colours = get_colours(word, target_word)
+            for column in range(WORD_LENGTH):
+                button = buttons[(GUESS_NUM - 1, column)]
+                if button.cget('text') != '':
+                    button_clicked(button, colours[column])
+
+                root.update_idletasks()
+                root.after(2500, check_win, root, word, target_word)
+
             word = ''
             LETTER_COUNT = 0
             GUESS_NUM += 1
@@ -49,35 +124,6 @@ def key_pressed(event):
             LETTER_COUNT -= 1
             word = word[:-1]
             buttons[(GUESS_NUM-1, LETTER_COUNT)].configure(text='')
-
-
-def check_word(word, target_word):
-    # PLACEHOLDER - close if word right
-    if word == target_word:
-        print('yay')
-        quit_game(root)
-
-    if not get_definition(word):
-        print(f'{word} not a valid guess')
-
-    else:
-        if len(word) == WORD_LENGTH:
-
-            status = get_colours(word, target_word)
-
-            for idx, result in enumerate(status):
-
-                pos = idx
-                colour = status[idx]
-                letter = word[idx]
-
-                button = buttons[(GUESS_NUM-1, pos)]
-
-                button.configure(text=letter)
-                button.configure(fg_color=colour)
-
-            if GUESS_NUM > NUM_GUESSES:
-                quit_game(root)
 # %% Defaults
 ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
 
@@ -98,8 +144,6 @@ GREY = '#3A3A3C'
 BLACK = '#121213'
 WHITE = '#FFFFFF'
 
-# WHITE = '#792DC3'
-
 # Tuple needed for dark/light mode
 THEME = (BLACK, WHITE)
 
@@ -109,7 +153,7 @@ FONT = ('Helvetica', 24, 'bold')
 SPAN = tuple([i for i in range(NUM_GUESSES+1)])
 
 # Relative path to icons (should? work on any machine)
-ICON_PATH = r'icons/'
+ICON_PATH = r'./src/hackathon/icons'
 
 target_word, target_definition = word_def_pair(WORD_LENGTH)
 print(target_word)
@@ -123,6 +167,8 @@ ctk.set_default_color_theme("blue")
 # Begin with blank window
 root = ctk.CTk()
 root.configure(fg_color=(WHITE, BLACK))
+# Add logo
+root.iconbitmap(rf'{ICON_PATH}/placeholder_cat.ico')
 
 # What to do when the X is clicked
 root.protocol('WM_DELETE_WINDOW', lambda: quit_game(root))
@@ -137,14 +183,27 @@ root.grid_rowconfigure(SPAN, weight=1)
 # %% Frames
 
 # Main frame
-frame_1 = ctk.CTkFrame(root, fg_color='transparent', border_color=THEME)
-frame_1.grid(row=0, column=1, columnspan=WORD_LENGTH, rowspan=NUM_GUESSES)
-frame_1.grid_columnconfigure(1, weight=1)
-frame_1.grid_rowconfigure(SPAN, weight=1)
+config_1 = {
+    'width':450,
+    'height':530,
+    'fg_color':'transparent',
+    'border_color':THEME[::-1],
+    }
+
+if NUM_GUESSES == 6:
+    frame_1 = ctk.CTkFrame(root, **config_1)
+    frame_1.grid(row=0, column=1, columnspan=WORD_LENGTH, rowspan=NUM_GUESSES)
+    frame_1.grid_rowconfigure(SPAN, weight=1)
+    # frame_1.grid_propagate(False)
+else:
+    frame_1 = ctk.CTkScrollableFrame(root, **config_1)
+    frame_1.grid(row=0, column=1, columnspan=WORD_LENGTH, rowspan=NUM_GUESSES)
+    frame_1.grid_rowconfigure(SPAN, weight=1)
+    frame_1.grid_propagate()
 
 # Options frame
-size_2 = {'width': 170, 'height': 490}
-frame_2 = ctk.CTkFrame(root, fg_color='transparent', border_color=THEME, **size_2)
+config_2 = {'width': 170, 'height': 490}
+frame_2 = ctk.CTkFrame(root, fg_color='transparent', border_color=THEME, **config_2)
 frame_2.grid(row=0, column=0)
 
 # Stop window shrinking to fit contents
@@ -153,7 +212,7 @@ frame_2.grid_columnconfigure(0, weight=1)
 
 # Keyboard frame
 frame_3 = ctk.CTkFrame(root, fg_color='transparent', border_color=THEME)
-frame_3.grid(row=NUM_GUESSES+2, column=1)
+frame_3.grid(row=NUM_GUESSES+1, column=1)
 
 # %% Buttons
 
@@ -177,8 +236,8 @@ for row in range(NUM_GUESSES):
         # to determine which letters go where
         coords = (row, column)
         button = ctk.CTkButton(frame_1, **button_config)
-        button.grid(row=row, column=column, padx=1, pady=1, sticky='n')
-
+        button.grid(row=row, column=column, padx=2, pady=2, sticky='ew')
+        button.grid_propagate(False)
         buttons[coords] = button
 
 
@@ -282,13 +341,12 @@ boss_watch.grid_propagate(False)
 
 
 # %% Start game
-
 # If left blank, will autofit
 # existing elements
-root.geometry()
+root.geometry('+0+0')
 
 # Disable resizing
-root.resizable(False,False)
+# root.resizable(False,False)
 
 # Display window
 root.mainloop()
