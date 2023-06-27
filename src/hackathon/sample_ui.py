@@ -144,8 +144,6 @@ GREY = '#3A3A3C'
 BLACK = '#121213'
 WHITE = '#FFFFFF'
 
-# WHITE = '#792DC3'
-
 # Tuple needed for dark/light mode
 THEME = (BLACK, WHITE)
 
@@ -155,7 +153,7 @@ FONT = ('Helvetica', 24, 'bold')
 SPAN = tuple([i for i in range(NUM_GUESSES+1)])
 
 # Relative path to icons (should? work on any machine)
-ICON_PATH = r'icons/'
+ICON_PATH = r'./src/hackathon/icons'
 
 target_word, target_definition = word_def_pair(WORD_LENGTH)
 print(target_word)
@@ -169,6 +167,8 @@ ctk.set_default_color_theme("blue")
 # Begin with blank window
 root = ctk.CTk()
 root.configure(fg_color=(WHITE, BLACK))
+# Add logo
+root.iconbitmap(rf'{ICON_PATH}/placeholder_cat.ico')
 
 # What to do when the X is clicked
 root.protocol('WM_DELETE_WINDOW', lambda: quit_game(root))
@@ -341,13 +341,12 @@ boss_watch.grid_propagate(False)
 
 
 # %% Start game
-
 # If left blank, will autofit
 # existing elements
-root.geometry()
+root.geometry('+0+0')
 
 # Disable resizing
-root.resizable(False,False)
+# root.resizable(False,False)
 
 # Display window
 root.mainloop()
