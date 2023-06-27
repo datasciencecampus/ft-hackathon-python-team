@@ -8,6 +8,73 @@ from src.hackathon.utils.in_work_mode import boss_is_watching
 from src.hackathon.utils.appearance import change_appearance
 from src.hackathon.utils.logic import get_colours
 # %% Functions
+def button_clicked(button, colour):
+    """
+    Handler for total animation.
+
+    Args:
+        button (ctk.CTkButton): The button that was clicked.
+        colour (str): The color to be applied to the button.
+    """
+    # Shrink animation
+    shrink_button(button)
+    # Expand animation
+    expand_button(button, colour)
+
+
+def shrink_button(button):
+
+    """
+    Simulate first part of box-flipping
+    by decrementing the box height to a minimum
+
+    Args:
+        button (ctk.CTkButton): The button to be shrunk.
+    """
+
+    # Should be 100 but may be a bit off
+    # due to window-drawing quirks
+    current_height = button.winfo_height()
+    if current_height > 80:
+        current_height = 80
+
+    while current_height > 1:
+        current_height -= 1
+        button.configure(height=current_height)
+        button.update()
+
+    # Workaround for button flexing
+    button.configure(height=1, border_color=THEME)
+
+def expand_button(button, colour):
+    button.configure(fg_color=colour, hover_color=colour)
+
+    current_height = button.winfo_height()
+    if current_height != 1:
+        current_height = 1
+
+    while button.winfo_height() <= 80:
+        current_height += 1
+        button.configure(height=current_height)
+        button.update()
+
+    # Workaround for button flexing
+    button.configure(height=80, border_color=THEME)
+
+
+def check_win(root, word, target_word):
+    """
+    Simulate second part of box-flipping
+    by incrementing the box height to the original height
+    Args:
+        button (ctk.CTkButton): The button to be expanded.
+        colour (str): The color to be applied to the button.
+    """
+    if word == target_word:
+        print('SPLENDID')
+        quit_game(root)
+
+# %% Functions
 def key_pressed(event):
     global LETTER_COUNT, word, GUESS_NUM, ks, target_word
 
@@ -39,7 +106,15 @@ def key_pressed(event):
         if not get_definition(word):
             print(f'{word} not a valid guess')
         else:
-            check_word(word, target_word)
+            colours = get_colours(word, target_word)
+            for column in range(WORD_LENGTH):
+                button = buttons[(GUESS_NUM - 1, column)]
+                if button.cget('text') != '':
+                    button_clicked(button, colours[column])
+
+                root.update_idletasks()
+                root.after(2500, check_win, root, word, target_word)
+
             word = ''
             LETTER_COUNT = 0
             GUESS_NUM += 1
@@ -49,35 +124,6 @@ def key_pressed(event):
             LETTER_COUNT -= 1
             word = word[:-1]
             buttons[(GUESS_NUM-1, LETTER_COUNT)].configure(text='')
-
-
-def check_word(word, target_word):
-    # PLACEHOLDER - close if word right
-    if word == target_word:
-        print('yay')
-        quit_game(root)
-
-    if not get_definition(word):
-        print(f'{word} not a valid guess')
-
-    else:
-        if len(word) == WORD_LENGTH:
-
-            status = get_colours(word, target_word)
-
-            for idx, result in enumerate(status):
-
-                pos = idx
-                colour = status[idx]
-                letter = word[idx]
-
-                button = buttons[(GUESS_NUM-1, pos)]
-
-                button.configure(text=letter)
-                button.configure(fg_color=colour)
-
-            if GUESS_NUM > NUM_GUESSES:
-                quit_game(root)
 # %% Defaults
 ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
 
