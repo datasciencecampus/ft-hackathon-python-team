@@ -183,14 +183,27 @@ root.grid_rowconfigure(SPAN, weight=1)
 # %% Frames
 
 # Main frame
-frame_1 = ctk.CTkFrame(root, fg_color='transparent', border_color=THEME)
-frame_1.grid(row=0, column=1, columnspan=WORD_LENGTH, rowspan=NUM_GUESSES)
-frame_1.grid_columnconfigure(1, weight=1)
-frame_1.grid_rowconfigure(SPAN, weight=1)
+config_1 = {
+    'width':450,
+    'height':530,
+    'fg_color':'transparent',
+    'border_color':THEME[::-1],
+    }
+
+if NUM_GUESSES == 6:
+    frame_1 = ctk.CTkFrame(root, **config_1)
+    frame_1.grid(row=0, column=1, columnspan=WORD_LENGTH, rowspan=NUM_GUESSES)
+    frame_1.grid_rowconfigure(SPAN, weight=1)
+    # frame_1.grid_propagate(False)
+else:
+    frame_1 = ctk.CTkScrollableFrame(root, **config_1)
+    frame_1.grid(row=0, column=1, columnspan=WORD_LENGTH, rowspan=NUM_GUESSES)
+    frame_1.grid_rowconfigure(SPAN, weight=1)
+    frame_1.grid_propagate()
 
 # Options frame
-size_2 = {'width': 170, 'height': 490}
-frame_2 = ctk.CTkFrame(root, fg_color='transparent', border_color=THEME, **size_2)
+config_2 = {'width': 170, 'height': 490}
+frame_2 = ctk.CTkFrame(root, fg_color='transparent', border_color=THEME, **config_2)
 frame_2.grid(row=0, column=0)
 
 # Stop window shrinking to fit contents
@@ -199,7 +212,7 @@ frame_2.grid_columnconfigure(0, weight=1)
 
 # Keyboard frame
 frame_3 = ctk.CTkFrame(root, fg_color='transparent', border_color=THEME)
-frame_3.grid(row=NUM_GUESSES+2, column=1)
+frame_3.grid(row=NUM_GUESSES+1, column=1)
 
 # %% Buttons
 
@@ -223,8 +236,8 @@ for row in range(NUM_GUESSES):
         # to determine which letters go where
         coords = (row, column)
         button = ctk.CTkButton(frame_1, **button_config)
-        button.grid(row=row, column=column, padx=1, pady=1, sticky='n')
-
+        button.grid(row=row, column=column, padx=2, pady=2, sticky='ew')
+        button.grid_propagate(False)
         buttons[coords] = button
 
 
