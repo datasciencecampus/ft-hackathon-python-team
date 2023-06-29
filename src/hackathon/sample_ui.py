@@ -168,7 +168,7 @@ ctk.set_default_color_theme("blue")
 root = ctk.CTk()
 root.configure(fg_color=(WHITE, BLACK))
 # Add logo
-root.iconbitmap(rf'{ICON_PATH}/placeholder_cat.ico')
+root.iconbitmap(rf'{ICON_PATH}/app_logo.ico')
 
 # What to do when the X is clicked
 root.protocol('WM_DELETE_WINDOW', lambda: quit_game(root))
