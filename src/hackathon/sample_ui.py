@@ -8,7 +8,7 @@ from src.hackathon.utils.in_work_mode import boss_is_watching
 from src.hackathon.utils.appearance import change_appearance
 from src.hackathon.utils.logic import get_colours
 # %% Functions
-def button_clicked(button, colour):
+def button_clicked(button, colour, BUTTON_MAX_HEIGHT):
     """
     Handler for total animation.
 
@@ -17,13 +17,12 @@ def button_clicked(button, colour):
         colour (str): The color to be applied to the button.
     """
     # Shrink animation
-    shrink_button(button)
+    shrink_button(button, BUTTON_MAX_HEIGHT)
     # Expand animation
-    expand_button(button, colour)
+    expand_button(button, colour, BUTTON_MAX_HEIGHT)
 
 
-def shrink_button(button):
-
+def shrink_button(button, BUTTON_MAX_HEIGHT):
     """
     Simulate first part of box-flipping
     by decrementing the box height to a minimum
@@ -35,8 +34,8 @@ def shrink_button(button):
     # Should be 100 but may be a bit off
     # due to window-drawing quirks
     current_height = button.winfo_height()
-    if current_height > 80:
-        current_height = 80
+    if current_height > BUTTON_MAX_HEIGHT:
+        current_height = BUTTON_MAX_HEIGHT
 
     while current_height > 1:
         current_height -= 1
@@ -46,23 +45,23 @@ def shrink_button(button):
     # Workaround for button flexing
     button.configure(height=1, border_color=THEME)
 
-def expand_button(button, colour):
+def expand_button(button, colour, BUTTON_MAX_HEIGHT):
     button.configure(fg_color=colour, hover_color=colour)
 
     current_height = button.winfo_height()
     if current_height != 1:
         current_height = 1
 
-    while button.winfo_height() <= 80:
+    while button.winfo_height() <= BUTTON_MAX_HEIGHT:
         current_height += 1
         button.configure(height=current_height)
         button.update()
 
     # Workaround for button flexing
-    button.configure(height=80, border_color=THEME)
+    button.configure(height=BUTTON_MAX_HEIGHT, border_color=THEME)
 
 
-def check_win(root, word, target_word):
+def check_win(root, WORD, target_word):
     """
     Simulate second part of box-flipping
     by incrementing the box height to the original height
@@ -70,13 +69,13 @@ def check_win(root, word, target_word):
         button (ctk.CTkButton): The button to be expanded.
         colour (str): The color to be applied to the button.
     """
-    if word == target_word:
+    if WORD == target_word:
         print('SPLENDID')
         quit_game(root)
 
 # %% Functions
 def key_pressed(event):
-    global LETTER_COUNT, word, GUESS_NUM, ks, target_word
+    global LETTER_COUNT, WORD, GUESS_NUM, ks, target_word
 
     # This block handles both
     # typed keys and those
@@ -99,30 +98,30 @@ def key_pressed(event):
         button.configure(text=key)
 
         LETTER_COUNT += 1
-        word += key
+        WORD += key
 
 
-    elif len(word) == WORD_LENGTH and key in ['RETURN','ENTER']:
-        if not get_definition(word):
-            print(f'{word} not a valid guess')
+    elif len(WORD) == WORD_LENGTH and key in ['RETURN','ENTER']:
+        if not get_definition(WORD):
+            print(f'{WORD} not a valid guess')
         else:
-            colours = get_colours(word, target_word)
+            colours = get_colours(WORD, target_word)
             for column in range(WORD_LENGTH):
                 button = buttons[(GUESS_NUM - 1, column)]
                 if button.cget('text') != '':
-                    button_clicked(button, colours[column])
+                    button_clicked(button, colours[column], BUTTON_MAX_HEIGHT)
 
                 root.update_idletasks()
-                root.after(2500, check_win, root, word, target_word)
+                root.after(2500, check_win, root, WORD, target_word)
 
-            word = ''
+            WORD = ''
             LETTER_COUNT = 0
             GUESS_NUM += 1
 
     elif key == 'BACKSPACE':
         if LETTER_COUNT > 0:
             LETTER_COUNT -= 1
-            word = word[:-1]
+            WORD = WORD[:-1]
             buttons[(GUESS_NUM-1, LETTER_COUNT)].configure(text='')
 # %% Defaults
 ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
@@ -131,8 +130,7 @@ ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
 GUESS_NUM = 1
 
 LETTER_COUNT = 0
-word = ''
-
+WORD = ''
 
 WORD_LENGTH = 5
 NUM_GUESSES = 6
@@ -155,6 +153,7 @@ SPAN = tuple([i for i in range(NUM_GUESSES+1)])
 # Relative path to icons (should? work on any machine)
 ICON_PATH = r'./src/hackathon/icons'
 
+BUTTON_MAX_HEIGHT = 80
 target_word, target_definition = word_def_pair(WORD_LENGTH)
 print(target_word)
 
@@ -219,8 +218,8 @@ frame_3.grid(row=NUM_GUESSES+1, column=1)
 # This will hold the coordinates of each button placed
 buttons = {}
 button_config = {
-    'height' : 80,
-    'width' : 80,
+    'height' : BUTTON_MAX_HEIGHT,
+    'width' : BUTTON_MAX_HEIGHT,
     'text': ' ', # should be blank to begin with,
     'text_color':THEME,
     'fg_color' : 'transparent',
@@ -274,7 +273,7 @@ for idx, row in enumerate(keys):
         letter = ctk.CTkButton(row_frame,
                                text=key,
                                width=width,
-                               height=70,
+                               height=40,
                                font=_font,
                                fg_color=r'#787c7f',
                                command = lambda a=key: key_pressed(a))
