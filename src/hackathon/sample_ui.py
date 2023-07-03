@@ -6,64 +6,156 @@ from src.hackathon.utils.words import word_def_pair, get_definition
 from src.hackathon.utils.quit import quit_game
 from src.hackathon.utils.in_work_mode import boss_is_watching
 from src.hackathon.utils.appearance import change_appearance
-from src.hackathon.utils.scaling import change_scaling
-from src.hackathon.utils.logic import check_placement
-from src.hackathon.utils.slide_panel import SlidePanel
-from PIL import Image
+from src.hackathon.utils.logic import get_colours
 # %% Functions
+def button_clicked(button, colour, BUTTON_MAX_HEIGHT):
+    """
+    Handler for total animation.
 
-# TODO: tidy this up
-target = word_def_pair(5)
-target_word = target[0].upper()
-target_def = target[1]
-print(target_word)
+    Args:
+        button (ctk.CTkButton): The button that was clicked.
+        colour (str): The color to be applied to the button.
+    """
+    # Shrink animation
+    shrink_button(button, BUTTON_MAX_HEIGHT)
+    # Expand animation
+    expand_button(button, colour, BUTTON_MAX_HEIGHT)
+
+
+def shrink_button(button, BUTTON_MAX_HEIGHT):
+    """
+    Simulate first part of box-flipping
+    by decrementing the box height to a minimum
+
+    Args:
+        button (ctk.CTkButton): The button to be shrunk.
+    """
+
+    # Should be 100 but may be a bit off
+    # due to window-drawing quirks
+    current_height = button.winfo_height()
+    if current_height > BUTTON_MAX_HEIGHT:
+        current_height = BUTTON_MAX_HEIGHT
+
+    while current_height > 1:
+        current_height -= 1
+        button.configure(height=current_height)
+        button.update()
+
+    # Workaround for button flexing
+    button.configure(height=1, border_color=THEME)
+
+def expand_button(button, colour, BUTTON_MAX_HEIGHT):
+    button.configure(fg_color=colour, hover_color=colour)
+
+    current_height = button.winfo_height()
+    if current_height != 1:
+        current_height = 1
+
+    while button.winfo_height() <= BUTTON_MAX_HEIGHT:
+        current_height += 1
+        button.configure(height=current_height)
+        button.update()
+
+    # Workaround for button flexing
+    button.configure(height=BUTTON_MAX_HEIGHT, border_color=THEME)
+
+
+def check_win(root, WORD, target_word):
+    """
+    Simulate second part of box-flipping
+    by incrementing the box height to the original height
+    Args:
+        button (ctk.CTkButton): The button to be expanded.
+        colour (str): The color to be applied to the button.
+    """
+    if WORD == target_word:
+        print('SPLENDID')
+        quit_game(root)
+
+# %% Functions
+def key_pressed(event):
+    global LETTER_COUNT, WORD, GUESS_NUM, ks, target_word
+
+    # This block handles both
+    # typed keys and those
+    # taken from on-screen keyboard
+    # presses
+    if isinstance(event, str):
+        if event == '⌫':
+            key = 'BACKSPACE'
+        elif event == '↵':
+            key = 'RETURN'
+        else:
+            key = event
+    else:
+        key = event.keysym.upper()
+
+    # If we just used isalpha() then BACKSPACE and
+    # RETURN would return True
+    if key in ALPHABET and LETTER_COUNT < WORD_LENGTH:
+        button = buttons[(GUESS_NUM-1, LETTER_COUNT)]
+        button.configure(text=key)
+
+        LETTER_COUNT += 1
+        WORD += key
+
+
+    elif len(WORD) == WORD_LENGTH and key in ['RETURN','ENTER']:
+        if not get_definition(WORD):
+            print(f'{WORD} not a valid guess')
+        else:
+            colours = get_colours(WORD, target_word)
+            for column in range(WORD_LENGTH):
+                button = buttons[(GUESS_NUM - 1, column)]
+                if button.cget('text') != '':
+                    button_clicked(button, colours[column], BUTTON_MAX_HEIGHT)
+
+                root.update_idletasks()
+                root.after(2500, check_win, root, WORD, target_word)
+
+            WORD = ''
+            LETTER_COUNT = 0
+            GUESS_NUM += 1
+
+    elif key == 'BACKSPACE':
+        if LETTER_COUNT > 0:
+            LETTER_COUNT -= 1
+            WORD = WORD[:-1]
+            buttons[(GUESS_NUM-1, LETTER_COUNT)].configure(text='')
+# %% Defaults
+ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
 
 # Initialise guess
-guess_number = 1
+GUESS_NUM = 1
 
-def guess():
-    global guess_number
-    word = submit_box.get().upper()
-
-    # PLACEHOLDER - close if word right
-    if word == target_word:
-        print('yay')
-        root.destroy()
-
-    if not get_definition(word):
-        print(f'{word} Not an English word')
-
-    else:
-        if len(word) == WORD_LENGTH:
-            for idx, letter in enumerate(word):
-
-                # Determine if letter correct
-                box_colour = check_placement(letter, idx, target_word)
-                text_boxes[(guess_number-1, idx)].insert("0.0", letter)
-
-                # Change text box colour after 10ms delay
-                root.after(10, text_frames[(guess_number-1, idx)].configure(fg_color=box_colour))
-                text_boxes[(guess_number-1, idx)].configure(bg_color=box_colour)
-
-            guess_number += 1
-            if guess_number > NUM_GUESSES:
-                quit_game(root)
-            else:
-                # Remove text from box
-                submit_box.delete(0, 'end')
+LETTER_COUNT = 0
+WORD = ''
 
 WORD_LENGTH = 5
 NUM_GUESSES = 6
 
-RED = '#BB0A1E'
-YELLOW = '#B59F3B'
 GREEN = '#538D4E'
+YELLOW = '#B59F3B'
 GREY = '#3A3A3C'
-BLACK = '#000000'
+
+BLACK = '#121213'
 WHITE = '#FFFFFF'
+
+# Tuple needed for dark/light mode
+THEME = (BLACK, WHITE)
+
+# Use for all text
+FONT = ('Helvetica', 24, 'bold')
+# Number of rows the window will have
+SPAN = tuple([i for i in range(NUM_GUESSES+1)])
 
 # Relative path to icons (should? work on any machine)
 ICON_PATH = r'./src/hackathon/icons'
+
+BUTTON_MAX_HEIGHT = 80
+target_word, target_definition = word_def_pair(WORD_LENGTH)
+print(target_word)
 
 # Needs to be dark by default
 ctk.set_appearance_mode("Dark")
@@ -73,6 +165,9 @@ ctk.set_default_color_theme("blue")
 
 # Begin with blank window
 root = ctk.CTk()
+root.configure(fg_color=(WHITE, BLACK))
+# Add logo
+root.iconbitmap(rf'{ICON_PATH}/app_logo.ico')
 
 # What to do when the X is clicked
 root.protocol('WM_DELETE_WINDOW', lambda: quit_game(root))
@@ -82,181 +177,175 @@ root.title("Team FinTrans Wordle")
 
 # Weight grid so widgets move nicely
 root.grid_columnconfigure(1, weight=1)
-root.grid_rowconfigure((0, 1, 2), weight=1)
+root.grid_rowconfigure(SPAN, weight=1)
 
+# %% Frames
 
-# =============================================================================
-# PANE 1
-# =============================================================================
-# This frame holds main game
-main_frame = ctk.CTkFrame(root,
-                          fg_color='transparent',
-                          border_color=(BLACK, WHITE))
-main_frame.grid(row=0,
-                column=1,
-                columnspan=WORD_LENGTH,
-                rowspan=NUM_GUESSES)
+# Main frame
+config_1 = {
+    'width':450,
+    'height':530,
+    'fg_color':'transparent',
+    'border_color':THEME[::-1],
+    }
 
+if NUM_GUESSES == 6:
+    frame_1 = ctk.CTkFrame(root, **config_1)
+    frame_1.grid(row=0, column=1, columnspan=WORD_LENGTH, rowspan=NUM_GUESSES)
+    frame_1.grid_rowconfigure(SPAN, weight=1)
+    # frame_1.grid_propagate(False)
+else:
+    frame_1 = ctk.CTkScrollableFrame(root, **config_1)
+    frame_1.grid(row=0, column=1, columnspan=WORD_LENGTH, rowspan=NUM_GUESSES)
+    frame_1.grid_rowconfigure(SPAN, weight=1)
+    frame_1.grid_propagate()
 
-# Need location of text frames
-# to update bg colours later
-text_frames = {}
-text_boxes = {}
+# Options frame
+config_2 = {'width': 170, 'height': 490}
+frame_2 = ctk.CTkFrame(root, fg_color='transparent', border_color=THEME, **config_2)
+frame_2.grid(row=0, column=0)
 
-# Generate 5x6 grid
+# Stop window shrinking to fit contents
+frame_2.grid_propagate(False)
+frame_2.grid_columnconfigure(0, weight=1)
+
+# Keyboard frame
+frame_3 = ctk.CTkFrame(root, fg_color='transparent', border_color=THEME)
+frame_3.grid(row=NUM_GUESSES+1, column=1)
+
+# %% Buttons
+
+# This will hold the coordinates of each button placed
+buttons = {}
+button_config = {
+    'height' : BUTTON_MAX_HEIGHT,
+    'width' : BUTTON_MAX_HEIGHT,
+    'text': ' ', # should be blank to begin with,
+    'text_color':THEME,
+    'fg_color' : 'transparent',
+    'border_color' : THEME,
+    'border_width' : 1,
+    'corner_radius' : 0,
+    'font':FONT
+    }
 for row in range(NUM_GUESSES):
     for column in range(WORD_LENGTH):
 
-        # Frame needed to then place text boxes in
-        # Corner radius defines the roundness
-        # of the box corners
-        text_frame = ctk.CTkFrame(main_frame,
-                                  height=80,
-                                  width=80,
-                                  fg_color='transparent',
-                                  border_color=(BLACK, WHITE),
-                                  border_width=1,
-                                  corner_radius=5,
-                                  )
-        text_frame.grid(row=row,
-                        column=column,
-                        rowspan=1,
-                        sticky='nsew',
-                        padx=1,
-                        pady=3)
+        # Need to access buttons by position
+        # to determine which letters go where
+        coords = (row, column)
+        button = ctk.CTkButton(frame_1, **button_config)
+        button.grid(row=row, column=column, padx=2, pady=2, sticky='ew')
+        button.grid_propagate(False)
+        buttons[coords] = button
 
-        # Prevent frame shrinking to fit
-        # contents
-        text_frame.grid_propagate(False)
 
-        text_frames[(row, column)] = text_frame
-        # Text box
-        text = ctk.CTkTextbox(text_frame,
-                              height=40,
-                              width=40,
-                              fg_color='transparent',
-                              border_color=(BLACK, WHITE),
-                              corner_radius=0,
-                              font=('Droid', 28),
-                              text_color=WHITE,
-                              )
+# %% Keyboard
 
-        text.grid(row=row,
-                  column=column,
-                  padx=22,
-                  pady=20)
+# Will need key coords for
+# button animation
+key_coords = {}
 
-        text_boxes[(row, column)] = text
+keys = ['QWERTYUIOP',
+        'ASDFGHJKL',
+        '↵ZXCVBNM⌫']
 
-# Where the user inputs word
-submit_box = ctk.CTkEntry(main_frame,
-                          placeholder_text='Guess word',
-                          fg_color='transparent',
-                          text_color=(BLACK, WHITE))
-submit_box.grid(row=NUM_GUESSES,
-                column=0,
-                columnspan=4)
+for idx, row in enumerate(keys):
+    row_frame = ctk.CTkFrame(frame_3, fg_color='transparent')
+    row_frame.grid(row=idx+1)
+    for idy, key in enumerate(row):
 
-guess_button = ctk.CTkButton(master = main_frame,
-                             text = "Guess",
-                             command = guess)
+        # These keys don't exist in Helvetica
+        if key in ['⌫','↵']:
+            width = 80
+            _font = ('', 24)
+            width = 80
+            padx=0
+            if key == '↵':
+                key = 'ENTER'
+                _font = ('', 18)
+                padx = (0, 5)
+        else:
+            _font = FONT
+            width=50
+            padx=(0,5)
 
-guess_button.grid(row = NUM_GUESSES,
-                  column = 3,
-                  columnspan = 2)
+        letter = ctk.CTkButton(row_frame,
+                               text=key,
+                               width=width,
+                               height=40,
+                               font=_font,
+                               fg_color=r'#787c7f',
+                               command = lambda a=key: key_pressed(a))
+        letter.grid_propagate(False)
+        letter.grid(row=idx, column=idy, padx=padx, pady = (0,5))
 
-# =============================================================================
-# PANE 4
-# =============================================================================
-# This frame holds options
+        key_coords[(idx, idy)] = letter
 
-# Panel slides in from the right
-animated_panel = SlidePanel(main_frame, 1.0, 0.5)
-# Initial value
+# Will display letters if typed or
+# on-screen keyboard used
+root.bind('<Key>', key_pressed)
+# %% Option menu
+
+# Initial values
 boss_switch = ctk.StringVar(value='no')
+theme_switch = ctk.StringVar(value="on")
+
+# This sits above the options
+option_label = ctk.CTkLabel(frame_2, text='Options', width=50)
+
+# Light/Dark mode
+theme_config = {
+    'width':110,
+    'text':"Dark mode",
+    'onvalue':"Dark",
+    'offvalue':"Light",
+    'border_color':'transparent',
+    'variable':theme_switch,
+    'progress_color':'#538D4E',
+    }
+
+# Dark/light mode
+theme = ctk.CTkSwitch(frame_2, **theme_config, command=lambda: change_appearance(theme_switch))
+# Start with dark mode on
+theme.select()
+
+# Boss is watching switch
+boss_config = {
+    'width':110,
+    'text':"Boss is in?",
+    'onvalue':"yes",
+    'offvalue':"no",
+    'border_color':'transparent',
+    'variable':boss_switch,
+    'progress_color':'#538D4E',
+
+    }
 boss_watch = ctk.CTkSwitch(
-    animated_panel,
-    text="Boss is in?",
-    variable=boss_switch,
-    onvalue="yes",
-    offvalue="no",
-    border_color=(WHITE, BLACK),
-    bg_color='transparent',
+    frame_2,
+    **boss_config,
     command=lambda: boss_is_watching(boss_switch,
                                      root,
                                      ICON_PATH),
     )
 
-boss_watch.grid(row=NUM_GUESSES+2,
-                column=0,
-                padx=20,
-                pady=0)
-# Text above option menu
-ui_scale = ctk.CTkLabel(animated_panel,
-                        text='Scaling:',
-                        anchor='w')
-ui_scale.grid(row=NUM_GUESSES-1,
-              column=0,
-              padx=20,
-              pady=10)
-# Clickable options
-ui_scale_options = ctk.CTkOptionMenu(
-    animated_panel,
-    values=[f'{i}%' for i in range(80, 130, 10)],
-    command = change_scaling)
-ui_scale_options.grid(row=NUM_GUESSES,
-                      column=0,
-                      padx=20,
-                      pady=0)
 
-# Default value
-ui_scale_options.set('100%')
+option_label.grid(row=0,padx=20)
+theme.grid(row=1, column=0, padx=20, pady=10)
+boss_watch.grid(row=2, column=0, padx=20)
 
-# Default value
-switch_var = ctk.StringVar(value="on")
+theme.grid_propagate(False)
+option_label.grid_propagate(False)
+boss_watch.grid_propagate(False)
 
-# Dark/light mode
-theme = ctk.CTkSwitch(animated_panel,
-                      text="Dark mode",
-                      command=lambda: change_appearance(switch_var),
-                      variable=switch_var,
-                      onvalue="Dark",
-                      offvalue="Light",
-                      border_color=(WHITE, BLACK),
-                      bg_color='transparent')
-theme.select()
 
-theme.grid(row=NUM_GUESSES+1,
-           column=0,
-           padx=20,
-           pady=(10, 10),
-           sticky='s')
-
-# Hamburger menu logo
-hamburger = ctk.CTkImage(light_image=Image.open(rf'{ICON_PATH}/hamburger_menu_light.ico'))
-open_close = ctk.CTkButton(main_frame,
-                           image=hamburger,
-                           text="",
-                           command=animated_panel.animate,
-                           font=('Droid', 12),
-                           corner_radius=8,
-                           width=25,
-                           height=25)
-
-open_close.grid(row=NUM_GUESSES, column=5, padx=10)
-open_close.grid_propagate(False)
-
-# Make pressing enter do the same thing
-# as clicking the Submit guess button
-root.bind('<Return>', lambda event: guess())
-
+# %% Start game
 # If left blank, will autofit
 # existing elements
-root.geometry()
+root.geometry('+0+0')
 
-# Static initial size
-# root.geometry(f"{1100}x{580}")
-# Minimum size
-root.minsize(500, 200)
+# Disable resizing
+# root.resizable(False,False)
+
 # Display window
 root.mainloop()

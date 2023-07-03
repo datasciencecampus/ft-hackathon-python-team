@@ -2,12 +2,12 @@ from nltk.corpus import words, wordnet
 import nltk
 import random
 
-#%% Downloads
+# %% Downloads
 nltk.download('wordnet', quiet=True)
 nltk.download('words', quiet=True)
-
 #%% Functions
-def get_word(word_length):
+
+def get_word(word_length: int=5)-> str:
     """
     Generate a random {word_length} letter word from the English language corpus.
 
@@ -17,11 +17,21 @@ def get_word(word_length):
         Random {word_length} letter word.
 
     """
-    english_words = words.words()
-    answer = [word for word in english_words if len(word) == word_length]
-    return random.choice(answer)
+    if word_length == 5:
+        path = r'./docs/word_list.txt'
+        with open(path, 'r') as file:
+            target = random.choice(file.read().split('\n')).upper()
 
-def get_definition(word):
+    else:
+        wordlist = [word for word in words.words() if len(word) == word_length]
+        if wordlist:
+            target = random.choice(wordlist).upper()
+        else:
+            raise IndexError(f'No words have length {word_length}')
+
+    return target
+
+def get_definition(word: str)->str:
     """
     Returns the definition of a word using wordnet.
 
@@ -36,6 +46,13 @@ def get_definition(word):
         The definition of the word.
 
     """
+    if len(word) == 5:
+        path = r'./docs/guess_list.txt'
+        with open(path, 'r') as f:
+            content = f.read()
+            if word.upper() not in content:
+                return
+
     word_syonym_set = wordnet.synsets(word)
     if word_syonym_set:
         word_name = word_syonym_set[0]
@@ -43,7 +60,7 @@ def get_definition(word):
     else:
         return
 
-def word_def_pair(word_length=5):
+def word_def_pair(word_length: int=5)-> tuple:
     """
     Get word-definition as a tuple
 

@@ -18,8 +18,10 @@ def boss_is_watching(boss_switch: str,
     else:
         # Window name
         root.title("Team FinTrans Wordle")
-        root.iconbitmap(rf'{ICON_PATH}/placeholder_cat.ico')
+        root.iconbitmap(rf'{ICON_PATH}/app_logo.ico')
 
 def on_unmap(root):
     # Minimize
     root.wm_state('iconic')
+
+
