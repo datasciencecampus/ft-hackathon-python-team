@@ -31,7 +31,7 @@ frame_w.grid()
 # # frame.mainloop()
 
 # # Add Button for making selection
-button1_w = tk.Button(frame_w, text="Quit", command = lambda a=root: quit_game(a), bg="grey")
+button1_w = ctk.CTkButton(frame_w, text="Quit", command = lambda a=root: quit_game(a), fg_color="grey")
 button1_w.grid(row=0, column=1)
 
 
