@@ -2,15 +2,13 @@
 
 # %% Imports
 import customtkinter as ctk
-import tkinter as tk
-#from tk import *
 from src.hackathon.utils.words import word_def_pair, get_definition
 from src.hackathon.utils.quit import quit_game
 from src.hackathon.utils.in_work_mode import boss_is_watching
 from src.hackathon.utils.appearance import change_appearance
 from src.hackathon.utils.logic import get_colours
 # %% Functions
-def button_clicked(button, colour, BUTTON_MAX_HEIGHT):
+def button_clicked(button, colour):
     """
     Handler for total animation.
 
@@ -19,12 +17,13 @@ def button_clicked(button, colour, BUTTON_MAX_HEIGHT):
         colour (str): The color to be applied to the button.
     """
     # Shrink animation
-    shrink_button(button, BUTTON_MAX_HEIGHT)
+    shrink_button(button)
     # Expand animation
-    expand_button(button, colour, BUTTON_MAX_HEIGHT)
+    expand_button(button, colour)
 
 
-def shrink_button(button, BUTTON_MAX_HEIGHT):
+def shrink_button(button):
+
     """
     Simulate first part of box-flipping
     by decrementing the box height to a minimum
@@ -36,8 +35,8 @@ def shrink_button(button, BUTTON_MAX_HEIGHT):
     # Should be 100 but may be a bit off
     # due to window-drawing quirks
     current_height = button.winfo_height()
-    if current_height > BUTTON_MAX_HEIGHT:
-        current_height = BUTTON_MAX_HEIGHT
+    if current_height > 80:
+        current_height = 80
 
     while current_height > 1:
         current_height -= 1
@@ -47,23 +46,23 @@ def shrink_button(button, BUTTON_MAX_HEIGHT):
     # Workaround for button flexing
     button.configure(height=1, border_color=THEME)
 
-def expand_button(button, colour, BUTTON_MAX_HEIGHT):
+def expand_button(button, colour):
     button.configure(fg_color=colour, hover_color=colour)
 
     current_height = button.winfo_height()
     if current_height != 1:
         current_height = 1
 
-    while button.winfo_height() <= BUTTON_MAX_HEIGHT:
+    while button.winfo_height() <= 80:
         current_height += 1
         button.configure(height=current_height)
         button.update()
 
     # Workaround for button flexing
-    button.configure(height=BUTTON_MAX_HEIGHT, border_color=THEME)
+    button.configure(height=80, border_color=THEME)
 
 
-def check_win(root, WORD, target_word):
+def check_win(root, word, target_word):
     """
     Simulate second part of box-flipping
     by incrementing the box height to the original height
@@ -71,33 +70,30 @@ def check_win(root, WORD, target_word):
         button (ctk.CTkButton): The button to be expanded.
         colour (str): The color to be applied to the button.
     """
-    if WORD == target_word:
+    if word == target_word:
         print('SPLENDID')
         root = ctk.CTk()
-        root.title('Message')
+        root.title('Message box test')
         frame_w = ctk.CTkFrame(root, height = 80,
                       width = 80,
                       fg_color = 'black')
         frame_w.grid()
-        button1_w = ctk.CTkButton(frame_w, text="Quit", command = lambda a=root: quit_game(a), fg_color="grey")
+        button1_w = tk.Button(frame_w, text="Quit", command = lambda a=root: quit_game(a), bg="grey")
         button1_w.grid(row=0, column=1)
         #quit_game(root)
-
-#def choice(option):
-#    """
-#    #Defines options for quitting game or restarting when correct word not guessed
-#    #Need to add (while/continue?) loop back to start of game for when player wants to try again
-#    """
-#    if option == "Yes":
-#    #code here to loop back to start
-#    if option == "No":
-#    quit_game()
-#    else:
-#        quit_game() #Could do with just this bit and delete lines 45/6?
-
+        
+def choice(option):
+    if option == "Yes":
+     #code here to loop back to start?
+    
+    if option == "No":
+        quit_game()
+        
+    else:
+        quit_game()
 # %% Functions
 def key_pressed(event):
-    global LETTER_COUNT, WORD, GUESS_NUM, ks, target_word
+    global LETTER_COUNT, word, GUESS_NUM, ks, target_word
 
     # This block handles both
     # typed keys and those
@@ -120,30 +116,30 @@ def key_pressed(event):
         button.configure(text=key)
 
         LETTER_COUNT += 1
-        WORD += key
+        word += key
 
 
-    elif len(WORD) == WORD_LENGTH and key in ['RETURN','ENTER']:
-        if not get_definition(WORD):
-            print(f'{WORD} not a valid guess')
+    elif len(word) == WORD_LENGTH and key in ['RETURN','ENTER']:
+        if not get_definition(word):
+            print(f'{word} not a valid guess')
         else:
-            colours = get_colours(WORD, target_word)
+            colours = get_colours(word, target_word)
             for column in range(WORD_LENGTH):
                 button = buttons[(GUESS_NUM - 1, column)]
                 if button.cget('text') != '':
-                    button_clicked(button, colours[column], BUTTON_MAX_HEIGHT)
+                    button_clicked(button, colours[column])
 
                 root.update_idletasks()
-                root.after(2500, check_win, root, WORD, target_word)
+                root.after(2500, check_win, root, word, target_word)
 
-            WORD = ''
+            word = ''
             LETTER_COUNT = 0
             GUESS_NUM += 1
 
     elif key == 'BACKSPACE':
         if LETTER_COUNT > 0:
             LETTER_COUNT -= 1
-            WORD = WORD[:-1]
+            word = word[:-1]
             buttons[(GUESS_NUM-1, LETTER_COUNT)].configure(text='')
 # %% Defaults
 ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
@@ -152,7 +148,8 @@ ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
 GUESS_NUM = 1
 
 LETTER_COUNT = 0
-WORD = ''
+word = ''
+
 
 WORD_LENGTH = 5
 NUM_GUESSES = 6
@@ -175,7 +172,6 @@ SPAN = tuple([i for i in range(NUM_GUESSES+1)])
 # Relative path to icons (should? work on any machine)
 ICON_PATH = r'./src/hackathon/icons'
 
-BUTTON_MAX_HEIGHT = 80
 target_word, target_definition = word_def_pair(WORD_LENGTH)
 print(target_word)
 
@@ -189,7 +185,7 @@ ctk.set_default_color_theme("blue")
 root = ctk.CTk()
 root.configure(fg_color=(WHITE, BLACK))
 # Add logo
-root.iconbitmap(rf'{ICON_PATH}/app_logo.ico')
+root.iconbitmap(rf'{ICON_PATH}/placeholder_cat.ico')
 
 # What to do when the X is clicked
 root.protocol('WM_DELETE_WINDOW', lambda: quit_game(root))
@@ -216,23 +212,6 @@ if NUM_GUESSES == 6:
     frame_1.grid(row=0, column=1, columnspan=WORD_LENGTH, rowspan=NUM_GUESSES)
     frame_1.grid_rowconfigure(SPAN, weight=1)
     # frame_1.grid_propagate(False)
-    #Create a Tkinter frame
-    frame_l = ctk.CTkFrame(root, height = 80,
-                           width = 80,
-                           fg_color = 'black')
-    #Define stuff
-    answer = tk.messagebox.askyesno("Question","Word not guessed, would you like to try again?")
-    #Create a Label
-    tk.Label(frame_l, text=answer, font= ('Arial',24)) #.pack() - idk what this does
-    frame.mainloop()
-    # Add Button for making selection
-    button1_l = tk.Button(frame_l, text="Yes",
-                          command = lambda: choice("Yes"), bg="grey")
-    button1_l.grid(row=0, column=1)
-    button2_l = tk.Button(frame_l, text="No",
-                          command = lambda: choice("No"), bg="grey")
-    button2_l.grid(row=0, column=2)
-    root.mainloop()
 else:
     frame_1 = ctk.CTkScrollableFrame(root, **config_1)
     frame_1.grid(row=0, column=1, columnspan=WORD_LENGTH, rowspan=NUM_GUESSES)
@@ -252,13 +231,30 @@ frame_2.grid_columnconfigure(0, weight=1)
 frame_3 = ctk.CTkFrame(root, fg_color='transparent', border_color=THEME)
 frame_3.grid(row=NUM_GUESSES+1, column=1)
 
+# Quit frame - does this need to be tied into an if/else loop?
+frame_l = ctk.CTkFrame(root, height = 80,
+                      width = 80,
+                     fg_color = 'black')
+# #Define stuff
+answer = tk.messagebox.askyesno("Question","Word not guessed, would you like to try again?")
+# #Create a Label
+tk.Label(frame_l, text=answer, font= ('Arial',24)) #.pack() - idk what this does
+frame.mainloop()
+# # Add Button for making selection
+button1_l = tk.Button(frame_l, text="Yes",
+command = lambda: choice("Yes"), bg="grey")
+button1_l.grid(row=0, column=1)
+button2_l = tk.Button(frame_l, text="No",
+command = lambda: choice("No"), bg="grey")
+button2_l.grid(row=0, column=2)
+
 # %% Buttons
 
 # This will hold the coordinates of each button placed
 buttons = {}
 button_config = {
-    'height' : BUTTON_MAX_HEIGHT,
-    'width' : BUTTON_MAX_HEIGHT,
+    'height' : 80,
+    'width' : 80,
     'text': ' ', # should be blank to begin with,
     'text_color':THEME,
     'fg_color' : 'transparent',
@@ -312,7 +308,7 @@ for idx, row in enumerate(keys):
         letter = ctk.CTkButton(row_frame,
                                text=key,
                                width=width,
-                               height=40,
+                               height=70,
                                font=_font,
                                fg_color=r'#787c7f',
                                command = lambda a=key: key_pressed(a))
