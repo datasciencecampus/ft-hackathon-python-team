@@ -5,14 +5,53 @@ import customtkinter as ctk
 from CTkMessagebox import CTkMessagebox
 import tkinter as tk
 #from tk import *
+
+import src.hackathon.utils.constants as constants
 from src.hackathon.utils.words import word_def_pair, get_definition
 from src.hackathon.utils.quit import quit_game
 from src.hackathon.utils.in_work_mode import boss_is_watching
 from src.hackathon.utils.appearance import change_appearance
 from src.hackathon.utils.logic import get_colours
-def start_game():     
+
+ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+
+# Initialise guess
+GUESS_NUM = 1
+
+LETTER_COUNT = 0
+WORD = ''
+
+WORD_LENGTH = 5
+NUM_GUESSES = 6
+
+GREEN = '#538D4E'
+YELLOW = '#B59F3B'
+GREY = '#3A3A3C'
+
+BLACK = '#121213'
+WHITE = '#FFFFFF'
+
+# Tuple needed for dark/light mode
+THEME = (BLACK, WHITE)
+
+# Use for all text
+FONT = ('Helvetica', 24, 'bold')
+# Number of rows the window will have
+SPAN = tuple([i for i in range(NUM_GUESSES+1)])
+
+# Relative path to icons (should? work on any machine)
+ICON_PATH = r'./src/hackathon/icons'
+
+BUTTON_MAX_HEIGHT = 80
+target_word, target_definition = word_def_pair(WORD_LENGTH)
+print(target_word)
+def start_game():
+    # Work in progress
+    global ALPHABET, GUESS_NUM, LETTER_COUNT, WORD, WORD_LENGTH, NUM_GUESSES, GREEN, YELLOW, GREY, BLACK, WHITE, THEME, FONT, SPAN, ICON_PATH, BUTTON_MAX_HEIGHT, target_word
+    
+    GUESS_NUM=1
     # %% Functions
-    def button_clicked(button, colour, BUTTON_MAX_HEIGHT):
+    def button_clicked(button, colour, max_height=constants.BUTTON_MAX_HEIGHT):
         """
         Handler for total animation.
     
@@ -21,12 +60,12 @@ def start_game():
             colour (str): The color to be applied to the button.
         """
         # Shrink animation
-        shrink_button(button, BUTTON_MAX_HEIGHT)
+        shrink_button(button, max_height)
         # Expand animation
-        expand_button(button, colour, BUTTON_MAX_HEIGHT)
+        expand_button(button, colour, max_height)
     
     
-    def shrink_button(button, BUTTON_MAX_HEIGHT):
+    def shrink_button(button, max_height):
         """
         Simulate first part of box-flipping
         by decrementing the box height to a minimum
@@ -38,8 +77,8 @@ def start_game():
         # Should be 100 but may be a bit off
         # due to window-drawing quirks
         current_height = button.winfo_height()
-        if current_height > BUTTON_MAX_HEIGHT:
-            current_height = BUTTON_MAX_HEIGHT
+        if current_height > max_height:
+            current_height = max_height
     
         while current_height > 1:
             current_height -= 1
@@ -47,25 +86,25 @@ def start_game():
             button.update()
     
         # Workaround for button flexing
-        button.configure(height=1, border_color=THEME)
+        button.configure(height=1, border_color=constants.THEME)
     
-    def expand_button(button, colour, BUTTON_MAX_HEIGHT):
+    def expand_button(button, colour, max_height):
         button.configure(fg_color=colour, hover_color=colour)
     
         current_height = button.winfo_height()
         if current_height != 1:
             current_height = 1
     
-        while button.winfo_height() <= BUTTON_MAX_HEIGHT:
+        while button.winfo_height() <= max_height:
             current_height += 1
             button.configure(height=current_height)
             button.update()
     
         # Workaround for button flexing
-        button.configure(height=BUTTON_MAX_HEIGHT, border_color=THEME)
+        button.configure(height=max_height, border_color=THEME)
     
     
-    def check_win(root, WORD, target_word,NUM_GUESSES, GUESS_NUM):
+    def check_win(root, WORD, target_word, NUM_GUESSES, GUESS_NUM):
         """
         Simulate second part of box-flipping
         by incrementing the box height to the original height
@@ -160,38 +199,6 @@ def start_game():
                 WORD = WORD[:-1]
                 buttons[(GUESS_NUM-1, LETTER_COUNT)].configure(text='')
     # %% Defaults
-    ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
-    
-    # Initialise guess
-    GUESS_NUM = 1
-    
-    LETTER_COUNT = 0
-    WORD = ''
-    
-    WORD_LENGTH = 5
-    NUM_GUESSES = 6
-    
-    GREEN = '#538D4E'
-    YELLOW = '#B59F3B'
-    GREY = '#3A3A3C'
-    
-    BLACK = '#121213'
-    WHITE = '#FFFFFF'
-    
-    # Tuple needed for dark/light mode
-    THEME = (BLACK, WHITE)
-    
-    # Use for all text
-    FONT = ('Helvetica', 24, 'bold')
-    # Number of rows the window will have
-    SPAN = tuple([i for i in range(NUM_GUESSES+1)])
-    
-    # Relative path to icons (should? work on any machine)
-    ICON_PATH = r'./src/hackathon/icons'
-    
-    BUTTON_MAX_HEIGHT = 80
-    target_word, target_definition = word_def_pair(WORD_LENGTH)
-    print(target_word)
     
     # Needs to be dark by default
     ctk.set_appearance_mode("Dark")
