@@ -23,9 +23,64 @@ ctk.set_appearance_mode('dark')
 # Default theme
 ctk.set_default_color_theme("green")   
 
-
 # Main Frame
-## Buttons
+class Main(ctk.CTkFrame):
+    """Main frame of game"""
+    def __init__(self, parent):
+        super().__init__(parent)
+        
+        self.configure(corner_radius = 0,
+                       fg_color = c.THEME[::-1],
+                       width = parent.winfo_screenwidth()*0.9,
+                       )
+
+        self.grid(row = 0,
+                  rowspan = max(c.SPAN),
+                  column = 1)
+        
+        self.grid_coords = {}
+        self.create_grid(parent)
+        
+    def create_grid(self, parent):
+        """
+        Generate a grid of buttons.
+        This will contain each letter.
+
+        Parameters
+        ----------
+        parent : TYPE
+            DESCRIPTION.
+
+        Returns
+        -------
+        None.
+
+        """
+        
+        for row, col in product(range(parent.number_guesses), 
+                                range(parent.word_length)
+                                ):
+            btn = ctk.CTkButton(self,
+                                fg_color = 'transparent',
+                                height = c.BUTTON_MAX_HEIGHT,
+                                width = c.BUTTON_MAX_HEIGHT,
+                                border_color = c.THEME,
+                                border_width = 1,
+                                corner_radius=0,
+                                font = c.FONT,
+                                text = '',
+                                text_color = c.THEME,
+                                hover_color = c.THEME[::-1],
+                                )
+            btn.grid(row = row,
+                     column = col,
+                     padx = 2,
+                     pady = 2,
+                     sticky = 'ew')
+            btn.grid_propagate(False)
+            self.grid_coords[row, col] = btn
+
+
 
 # Options Frame
 class Options(ctk.CTkFrame):
@@ -33,19 +88,28 @@ class Options(ctk.CTkFrame):
     def __init__(self, parent):
         super().__init__(parent)
         
-        self.configure(fg_color='transparent')
+        self.configure(corner_radius = 0, 
+                       fg_color = c.THEME[::-1],
+                       width = parent.winfo_screenwidth()*0.1,
+                       )
+        
 
-        self.place(x=0,
-                   y=0,
-                   relwidth=0.25, # % of window
-                   relheight=1)
 
+        self.grid(row = 0,
+                  column = 0,
+                  rowspan = c.NUM_GUESSES+1,
+                  sticky = 'nw',
+                  )
+        self.grid_propagate(False)
+        # self.grid_columnconfigure((0, 1), weight=2, uniform='tag')
+
+        
         self.add_option_label()
         self.add_dark_mode()
         self.add_in_work_mode(parent)
         self.add_quit_button(parent)
 
-    
+
     def add_option_label(self):
         """
         Add option label to top
@@ -58,12 +122,12 @@ class Options(ctk.CTkFrame):
         """
         option_label = ctk.CTkLabel(self, 
                                     text = 'Options', 
-                                    width = 20,
+                                    width = 50,
                                     )
         option_label.grid(row = 0, 
                           column = 0, 
-                          sticky = 'ew',
-                          padx = 30,
+                          sticky = 'n',
+                          padx = 10,
                           )
     
         option_label.grid_propagate(False)
@@ -94,7 +158,7 @@ class Options(ctk.CTkFrame):
         theme.grid(row=1, 
                    column=0, 
                    sticky='ew', 
-                   padx=5,
+                   padx=10,
                    pady=10,
                    )
         # Start with dark mode on
@@ -129,7 +193,7 @@ class Options(ctk.CTkFrame):
 
         in_work.grid(row = 2, 
                      column = 0, 
-                     padx = 5,
+                     padx = 10,
                      )
         
         in_work.grid_propagate(False)
@@ -160,7 +224,7 @@ class Options(ctk.CTkFrame):
                                     )
         quit_button.grid(row = 4, 
                          column = 0, 
-                         padx = 20, 
+                         padx = 10, 
                          pady = 10,
                          )
         
@@ -168,34 +232,188 @@ class Options(ctk.CTkFrame):
 
 
 # Keyboard Frame
+class Keyboard(ctk.CTkFrame):
+    """On-screen keyboard"""
+    def __init__(self, parent):
+        super().__init__(parent)
+        
+        self.configure(corner_radius = 0,
+                       fg_color = c.THEME[::-1],
+                       height = parent.winfo_screenheight()*0.2,
+                       width = parent.winfo_screenwidth()*0.9
+                       )
 
+        self.grid(rows = c.NUM_GUESSES+1,
+                  column = 1,
+                  )
+        
+        self.key_coords = {}
+        
+        self.add_keyboard_keys(parent)
+    
+    def _increment_letter_position(self, parent):
+        parent.current_position += 1
+        
+    def _decrement_letter_position(self, parent):
+        parent.current_position -= 1
+
+    def _increment_guess_number(self, parent):
+        parent.guess_number += 1
+        
+    def _decrement_guess_number(self, parent):
+        parent.guess_number -= 1
+    
+    def _add_letter_to_word(self, parent, letter):
+        parent.guess_word += letter
+        
+    def _remove_letter_from_word(self, parent):
+        parent.guess_word = parent.guess_word[:-1]
+        
+    def key_pressed(self, event, parent):
+        """
+        Handler for key press event
+
+        Parameters
+        ----------
+        event : TYPE
+            DESCRIPTION.
+        parent : TYPE
+            DESCRIPTION.
+
+        Returns
+        -------
+        None.
+
+        """
+        
+        if isinstance(event, str):
+            if event == '⌫':
+                key = 'BACKSPACE'
+            elif event == '↵':
+                key = 'RETURN'
+            else:
+                key = event
+        else:
+            key = event.keysym.upper()
+        
+        if key in c.ALPHABET and parent.current_position < c.WORD_LENGTH:
+            button = (parent
+                      .main
+                      .grid_coords[parent.guess_number, parent.current_position]
+                      )
+            button.configure(text=key)
+            
+            self._increment_letter_position(parent)
+            self._add_letter_to_word(parent, key)
+            
+        elif key == 'BACKSPACE':
+            if parent.current_position > 0:
+                self._decrement_letter_position(parent)
+                self._remove_letter_from_word(parent)
+                button = (parent
+                          .main
+                          .grid_coords[parent.guess_number, parent.current_position]
+                          )
+                button.configure(text='')
+            
+            
+    def add_keyboard_keys(self, parent):
+        """
+        Add keyboard layout
+
+        Returns
+        -------
+        None.
+
+        """
+        for idx, row in enumerate(c.KEYS):
+            row_frame = ctk.CTkFrame(self, 
+                                     fg_color = 'transparent')
+            row_frame.grid(row = idx+1)
+            for idy, key in enumerate(row):
+                 # These keys don't exist in Helvetica
+                 if key in ['⌫','↵']:
+                     width = 80
+                     _font = ('', 24)
+                     width = 80
+                     padx=0
+                     if key == '↵':
+                         key = 'ENTER'
+                         _font = ('', 18)
+                         padx = (0, 5)
+                 else:
+                     _font = c.FONT
+                     width=50
+                     padx=(0,5)
+        
+                 letter = ctk.CTkButton(row_frame,
+                                        text = key,
+                                        width = width,
+                                        height = 40,
+                                        font = _font,
+                                        fg_color = r'#787c7f',
+                                        hover_color=c.GREY,
+                                        command = lambda event=key: self.key_pressed(event, 
+                                                                                     parent),
+                                        )
+                 letter.grid_propagate(False)
+                 letter.grid(row = idx, 
+                             column = idy, 
+                             padx = padx, 
+                             pady = (0,5),
+                             )
+        
+                 self.key_coords[idx, idy] = letter               
+
+
+
+# Will display letters if typed or
+# on-screen keyboard used
+# root.bind('<Key>', key_pressed)
 # %% 
 # App
 class App(ctk.CTk):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         
-        # Main setup
-        # Window title
+        # General setup
         self.title('Team FinTrans Wordle')
         self.iconbitmap(rf'{c.ICON_PATH}/app_logo.ico')
         
+        self.configure(fg_color = c.THEME[::-1])
+        
         # Size
-        self.geometry('+0+0')
+        self.geometry('700x700+0+0')
         self.minsize(600,600)
         
         # What to do when X is clicked
         self.protocol('WM_DELETE_WINDOW', self.quit_game)
         
-        # Options menu
-        self.options = Options(self)
-
-        self.grid_columnconfigure((0, 1, 2), weight=1, uniform='a')
+        self.grid_columnconfigure((1), weight=1, uniform='a')
         self.grid_rowconfigure(c.SPAN, weight=1, uniform='a')
         
         # Stop main window shrinking to fit
         # widgets
         self.grid_propagate(False)
+        
+        # Initial values
+        self.word_length = c.WORD_LENGTH
+        self.number_guesses = c.NUM_GUESSES
+        self.guess_number = 0
+        self.current_position = 0
+        self.guess_word = ''
+        
+        
+        # Frames setup
+        
+        # Options menu
+        self.options = Options(self)
+        
+        # Main frame
+        self.main = Main(self)
+        
+        # Keyboard
+        self.keyboard = Keyboard(self)
         
     def start_game(self):
         self.mainloop()
