@@ -3,8 +3,6 @@
 # %% Imports
 import customtkinter as ctk
 from CTkMessagebox import CTkMessagebox
-import tkinter as tk
-#from tk import *
 
 import src.hackathon.utils.constants as constants
 from src.hackathon.utils.words import word_def_pair, get_definition
@@ -120,9 +118,7 @@ def start_game():
             frame_w.grid(column = 4)
             button1_w = ctk.CTkButton(frame_w, text="Quit", command = lambda a=root: quit_game(a), fg_color="grey")
             button1_w.grid(row=0, column=1)
-            #quit_game(root)
-            #root = ctk.CTk()
-            #root.title('Message')        
+     
         elif GUESS_NUM == NUM_GUESSES:
             #Create a Tkinter frame
             print(GUESS_NUM,NUM_GUESSES)
@@ -135,19 +131,7 @@ def start_game():
             elif response == "Nah":
                 quit_game(root)
             
-    
-    #def choice(option):
-    #    """
-    #    #Defines options for quitting game or restarting when correct word not guessed
-    #    #Need to add (while/continue?) loop back to start of game for when player wants to try again
-    #    """
-    #    if option == "Yes":
-    #    #code here to loop back to start
-    #    if option == "No":
-    #    quit_game()
-    #    else:
-    #        quit_game() #Could do with just this bit and delete lines 45/6?
-    
+
     # %% Functions
     def key_pressed(event):
         global LETTER_COUNT, WORD, GUESS_NUM, ks, target_word
@@ -344,11 +328,15 @@ def start_game():
         'offvalue':"Light",
         'border_color':'transparent',
         'variable':theme_switch,
-        'progress_color':'#538D4E',
+        'progress_color':GREEN,
         }
     
     # Dark/light mode
-    theme = ctk.CTkSwitch(frame_2, **theme_config, command=lambda: change_appearance(theme_switch))
+    theme = ctk.CTkSwitch(
+        frame_2, 
+        **theme_config, 
+        command=lambda: change_appearance(theme_switch)
+        )
     # Start with dark mode on
     theme.select()
     
@@ -360,7 +348,7 @@ def start_game():
         'offvalue':"no",
         'border_color':'transparent',
         'variable':boss_switch,
-        'progress_color':'#538D4E',
+        'progress_color': GREEN,
     
         }
     boss_watch = ctk.CTkSwitch(
@@ -371,23 +359,34 @@ def start_game():
                                          ICON_PATH),
         )
     
+    quit_button = ctk.CTkButton(
+        frame_2,
+        text='Quit',
+        fg_color=GREEN,
+        width=80,
+        command=lambda: quit_game(root)
+        )
     
     option_label.grid(row=0,padx=20)
     theme.grid(row=1, column=0, padx=20, pady=10)
     boss_watch.grid(row=2, column=0, padx=20)
+    quit_button.grid(row=3, column=0, padx=20, pady=10)
     
     theme.grid_propagate(False)
     option_label.grid_propagate(False)
     boss_watch.grid_propagate(False)
+    quit_button.grid_propagate(False)
     
     
     # %% Start game
     # If left blank, will autofit
     # existing elements
+    # +0, +0 = start in upper left
+    # corner of screen
     root.geometry('+0+0')
     
     # Disable resizing
-    # root.resizable(False,False)
+    root.resizable(False,False)
     
     # Display window
     root.mainloop()
