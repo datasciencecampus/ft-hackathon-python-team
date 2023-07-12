@@ -5,11 +5,11 @@ import customtkinter as ctk
 from CTkMessagebox import CTkMessagebox
 
 import src.hackathon.utils.constants as constants
-from src.hackathon.utils.words import word_def_pair, get_definition
-from src.hackathon.utils.quit import quit_game
-from src.hackathon.utils.in_work_mode import boss_is_watching
 from src.hackathon.utils.appearance import change_appearance
+from src.hackathon.utils.in_work_mode import boss_is_watching
 from src.hackathon.utils.logic import get_colours
+from src.hackathon.utils.quit import quit_game
+from src.hackathon.utils.words import get_definition, word_def_pair
 
 ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
 

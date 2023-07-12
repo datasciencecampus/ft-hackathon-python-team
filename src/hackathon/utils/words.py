@@ -1,6 +1,7 @@
-from nltk.corpus import words, wordnet
-import nltk
 import random
+
+import nltk
+from nltk.corpus import wordnet, words
 
 # %% Downloads
 nltk.download('wordnet', quiet=True)

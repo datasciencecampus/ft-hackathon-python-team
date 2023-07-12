@@ -8,6 +8,7 @@ Testing word-related functions
 """
 import src.hackathon.utils.words as words
 
+
 def test_get_word():
 
     path = r'./docs/word_list.txt'

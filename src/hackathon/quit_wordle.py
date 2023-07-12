@@ -1,5 +1,7 @@
-import customtkinter as ctk
 import tkinter as tk
+
+import customtkinter as ctk
+
 from src.hackathon.utils.quit import quit_game
 
 #Structure:

@@ -1,4 +1,5 @@
-from src.hackathon.utils.logic import get_colours, GREEN, YELLOW, GREY
+from src.hackathon.utils.logic import GREEN, GREY, YELLOW, get_colours
+
 
 def test_get_colours():
     assert get_colours('WORDS', 'PLOWS') == [YELLOW, YELLOW, GREY, GREY, GREEN]
