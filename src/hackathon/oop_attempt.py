@@ -23,8 +23,35 @@ from itertools import product
 ctk.set_appearance_mode('dark')
 # Default theme
 ctk.set_default_color_theme("green")   
-      
 
+class Help(ctk.CTkToplevel):
+    """Help menu"""
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.configure(fg_color=c.THEME[::-1])
+        
+        self.geometry("400x300+0+0")
+
+        self.label = ctk.CTkLabel(self, text="How to play: ")
+        self.label.pack(padx=20, pady=20)
+
+class LetterBox(ctk.CTkButton):
+    """Default box for the letters to go in"""
+    def __init__(self, parent):
+        super().__init__(parent)
+        self.configure(fg_color = 'transparent',
+                       height = c.BUTTON_MAX_HEIGHT,
+                       width = c.BUTTON_MAX_HEIGHT,
+                       border_color = c.THEME,
+                       border_width = 1,
+                       corner_radius=0,
+                       font = c.FONT,
+                       text = '',
+                       text_color = c.THEME,
+                       hover_color = c.THEME[::-1],
+                       )
+        
+        
 # Main Frame
 class Main(ctk.CTkFrame):
     """Main frame of game"""
@@ -63,24 +90,13 @@ class Main(ctk.CTkFrame):
                                 range(parent.word_length)
                                 ):
 
-            btn = ctk.CTkButton(self,
-                                fg_color = 'transparent',
-                                height = c.BUTTON_MAX_HEIGHT,
-                                width = c.BUTTON_MAX_HEIGHT,
-                                border_color = c.THEME,
-                                border_width = 1,
-                                corner_radius=0,
-                                font = c.FONT,
-                                text = '',
-                                text_color = c.THEME,
-                                hover_color = c.THEME[::-1],
-                                )
-
+            btn = LetterBox(self)
             btn.grid(row = row,
                      column = col,
                      padx = 2,
                      pady = 2,
-                     sticky = 'ew')
+                     )
+            
             btn.grid_propagate(False)
             self.grid_coords[row, col] = btn
 
@@ -205,7 +221,7 @@ class Main(ctk.CTkFrame):
         
         response = box.get()
         if response == 'Retry':
-            parent.quit_game()
+            parent.restart_game()
         elif response == 'Quit':
             parent.quit_game()
             
@@ -236,7 +252,7 @@ class Main(ctk.CTkFrame):
         
         response = box.get()
         if response == 'Retry':
-            parent.quit_game()
+            parent.restart_game()      
         elif response == 'Quit':
             parent.quit_game()
 
@@ -249,8 +265,9 @@ class Options(ctk.CTkFrame):
         super().__init__(parent)
         
         self.configure(corner_radius = 0, 
-                       fg_color = c.THEME[::-1],
+                        fg_color = c.THEME[::-1],
                        width = parent.winfo_screenwidth()*0.1,
+                       height = parent.winfo_screenheight()*0.5,
                        )
 
         self.grid(row = 0,
@@ -263,7 +280,10 @@ class Options(ctk.CTkFrame):
         self.add_option_label()
         self.add_dark_mode()
         self.add_in_work_mode(parent)
+        self.add_help_button(parent)
+        self.add_retry_button(parent)
         self.add_quit_button(parent)
+        
 
 
     def add_option_label(self):
@@ -353,8 +373,66 @@ class Options(ctk.CTkFrame):
                      )
         
         in_work.grid_propagate(False)
-    
-    
+
+    def add_help_button(self, parent):
+        """
+        Opens up a help window.
+
+        Parameters
+        ----------
+        parent : TYPE
+            DESCRIPTION.
+
+        Returns
+        -------
+        None.
+
+        """
+        
+        
+        help_button = ctk.CTkButton(self,
+                                    text = 'Help',
+                                    fg_color = c.GREEN,
+                                    width = 80,
+                                    command = parent.help_window,
+                                    )
+        help_button.grid(row = 3, 
+                         column = 0, 
+                         padx = 10, 
+                         pady = 10,
+                         )
+        
+        help_button.grid_propagate(False)
+    def add_retry_button(self, parent):
+        """
+        Adds a retry button to the options
+        pane that restarts the app when clicked.
+
+        Parameters
+        ----------
+        parent : TYPE
+            DESCRIPTION.
+
+        Returns
+        -------
+        None.
+
+        """
+        
+        quit_button = ctk.CTkButton(self,
+                                    text = 'Retry',
+                                    fg_color = c.GREEN,
+                                    width = 80,
+                                    command = parent.restart_game,
+                                    )
+        quit_button.grid(row = 4, 
+                         column = 0, 
+                         padx = 10, 
+                         pady = 10,
+                         )
+        
+        quit_button.grid_propagate(False)
+        
 
     def add_quit_button(self, parent):
         """
@@ -378,7 +456,7 @@ class Options(ctk.CTkFrame):
                                     width = 80,
                                     command = parent.quit_game,
                                     )
-        quit_button.grid(row = 4, 
+        quit_button.grid(row = 5, 
                          column = 0, 
                          padx = 10, 
                          pady = 10,
@@ -401,6 +479,7 @@ class Keyboard(ctk.CTkFrame):
 
         self.grid(rows = c.NUM_GUESSES+1,
                   column = 1,
+                  pady=10,
                   )
         
         self.key_coords = {}
@@ -614,8 +693,8 @@ class App(ctk.CTk):
         self.configure(fg_color = c.THEME[::-1])
         
         # Size
-        self.geometry('700x700+0+0')
-        self.minsize(600,600)
+        self.geometry('+0+0')
+        self.minsize(750,680)
         
         # What to do when X is clicked
         self.protocol('WM_DELETE_WINDOW', self.quit_game)
@@ -640,11 +719,10 @@ class App(ctk.CTk):
 
         self.guess_word = ''
         
-        
         # Frames setup
-        
         # Options menu
         self.options = Options(self)
+        self.help_window = None
         
         # Main frame
         self.main = Main(self)
@@ -655,13 +733,23 @@ class App(ctk.CTk):
     def start_game(self):
         self.mainloop()
         
-            
+    
+    def restart_game(self):
+        self.quit_game()
+        self.__init__()
+        self.start_game()
+    
+
     def quit_game(self):
-        print('Qutting...')
+        print('Quitting...')
         self.update()
         self.quit()
         self.destroy()
-
+    
+    def help_window(self):
+        if self.help_window is None or not self.help_window.winfo_exists():
+            self.help_window = Help(self)
+        self.help_window.grab_set()
 
 # %%
 if __name__=='__main__':
