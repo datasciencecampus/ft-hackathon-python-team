@@ -107,7 +107,6 @@ class Help(ctk.CTkToplevel):
 
         font = ("Helvetica", 20)
         self._example_grid(6, c.GREEN, words[0])
-        print(self.grid_size())
         self._example_grid(8, c.YELLOW, words[1])
         self._example_grid(10, c.GREY, words[2])
 
@@ -734,7 +733,6 @@ class Keyboard(ctk.CTkFrame):
             else:
                 key = event
         else:
-            print(type(event))
             key = event.keysym.upper()
 
         if key in c.ALPHABET:
