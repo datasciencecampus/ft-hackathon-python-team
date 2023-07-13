@@ -14,7 +14,6 @@ import src.hackathon.utils.constants as c
 from src.hackathon.utils.appearance import change_appearance
 from src.hackathon.utils.in_work_mode import boss_is_watching
 from src.hackathon.utils.words import get_definition, word_def_pair
-
 # from typing import Union, Tuple, Callable, Optional, Dict
 
 # %% Main
@@ -25,7 +24,7 @@ ctk.set_default_color_theme("green")
 
 
 class Help(ctk.CTkToplevel):
-    """Help menu"""
+    """Display instructions for how the game works"""
 
     def __init__(self, parent, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -779,7 +778,7 @@ class Keyboard(ctk.CTkFrame):
         elif key == "BACKSPACE":
             self._delete_letter(parent)
 
-        elif key == "RETURN":
+        elif key in ["RETURN", "ENTER"]:
             self.submit_guess(parent)
 
     def _add_letter(self, parent, key):
@@ -846,7 +845,23 @@ class Keyboard(ctk.CTkFrame):
         button_grid = parent.main.grid_coords
 
         if not get_definition(parent.guess_word):
-            print(f"{parent.guess_word} not a valid guess")
+            
+            invalid = CTkMessagebox(
+                parent,
+                title="",
+                fg_color='transparent',
+                button_color='transparent',
+                cancel_button=None,
+                message=f"{parent.guess_word} is not a valid guess!",
+                icon=None,
+                option_1=None,
+                option_2=None,
+                fade_in_duration=1,
+            )
+            
+            # Wait two seconds
+            invalid.after(2000)
+            invalid.destroy()
 
         elif parent.current_position == c.WORD_LENGTH:
             for idx, colour in enumerate(parent.main.get_colours(parent)):
