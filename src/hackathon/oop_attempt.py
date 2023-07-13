@@ -30,67 +30,64 @@ class Help(ctk.CTkToplevel):
     def __init__(self, parent, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.configure(fg_color = c.THEME[::-1])
-
         self.geometry("+0+0")
-        
         self.title('Rules')
-        # self.iconbitmap(rf"{c.ICON_PATH}/app_logo.ico")
-
-        self.howto = ctk.CTkLabel(self,
-                                  text = "How To Play",
-                                  font = c.FONT)
-        self.howto.grid(row = 0,
-                        column = 0,
-                        padx = 10,
-                        sticky='nw',
-                        )
-
-        self.guess = ctk.CTkLabel(self,
-                                  text = f"Guess the Wordle in {c.NUM_GUESSES} tries.",
-                                  font = ('Helvetica', 20))
-        self.guess.grid(row = 1,
-                        column = 0,
-                        padx = 10,
-                        sticky='nw',
-                        )
-
-
-        bullet_text = dedent(f"""\
-        • Each guess must be a valid {c.WORD_LENGTH}-letter word.
-
-        • The colour of the tiles will change to show how close your guess was to the word.
-        """)
-
-
-        self.bullets = ctk.CTkTextbox(self,
-                                      fg_color = 'transparent',
-                                      wrap = 'word',
-                                      font = ('Helvetica', 20),
-                                      width = 600,
-                                      height = 120,
-                                      activate_scrollbars = False,
-                                      )
-
-        self.bullets.insert('0.0', bullet_text)
-        self.bullets.grid(row = 2,
-                          column = 0,
-                          padx = 10,
-                          sticky='w',
-                          )
-        self.bullets.grid_propagate(False)
-
-        self.example = ctk.CTkLabel(self,
-                                    text = 'Examples',
-                                    font = ('Helvetica', 20, 'bold'),
-                               )
-        self.example.grid(row = 3,
-                          column = 0,
-                          padx = 10,
-                          pady = 5, 
-                          sticky = 'nw',
-                          )
-
         
+        self.add_intro_text()
+        self.add_examples()
+    
+    def add_intro_text(self):
+        """
+        Add all the text bits to the help window.
+        
+        The end result should be:
+            
+        How To Play
+        
+        Guess the Wordle in 6 tries.
+        
+        - Each guess must be a valid 5-letter word
+        - The colour of the tiles will change to show how close your 
+        guess was to the word.
+        
+        Examples
+        
+        Returns
+        -------
+        None.
+
+        """
+        
+        text = dedent(f"""\
+            How To Play
+            Guess the Wordle in {c.NUM_GUESSES} tries.
+            • Each guess must be a valid {c.WORD_LENGTH}-letter word
+            • The colour of the tiles will change to show how close your guess was to the word.
+            Examples
+            """).strip()
+            
+        for row, line in enumerate(text.split('\n')):
+            
+            # First or last row
+            if row in [0, len(text.split('\n'))-1]:
+                font = ('Helvetica', 24, 'bold', 'underline')
+                pady = 10
+            else:
+                font = ('Helvetica', 20)
+                
+            
+            label = ctk.CTkLabel(self,
+                                 text = line,
+                                 font = font)
+            
+            label.grid(row = row,
+                       column = 0,
+                       padx = 10,
+                       pady = pady,
+                       sticky = 'nw')
+                
+    def add_examples(self):
+    
         # These are just used
         # for the example page
         words = [
@@ -99,30 +96,42 @@ class Help(ctk.CTkToplevel):
             'CLAMP',
             ]
         
-        
-        self.add_example_grid(4, c.GREEN, words[0])
-        self.add_example_grid(6, c.YELLOW, words[1])
-        self.add_example_grid(8, c.GREY, words[2])
+        font = ('Helvetica', 20)
+        self._example_grid(6, c.GREEN, words[0])
+        self._example_grid(8, c.YELLOW, words[1])
+        self._example_grid(10, c.GREY, words[2])
 
-        self.green_example = ctk.CTkLabel(self, 
-                                          text = 'W is in the word and in the correct spot.',
-                                          font = ('Helvetica', 16),
-                                          )
+        green_example = ctk.CTkLabel(self, 
+                                     text = 'W is in the word and in the correct spot.',
+                                     font = font,
+                                     )
 
         
-        self.yellow_example = ctk.CTkLabel(self, 
-                                           text = 'T is in the word but in the wrong spot.',
-                                           font = ('Helvetica', 16),
-                                           )
-        self.grey_example = ctk.CTkLabel(self, 
-                                         text = 'C, A and P are not in the word in any spot.',
-                                         font = ('Helvetica', 16),
-                                         )
-        self.green_example.grid(row = 5, column = 0, padx = 10, pady = 5, sticky = 'w')
-        self.yellow_example.grid(row = 7, column = 0, padx = 10, pady = 5, sticky = 'w')
-        self.grey_example.grid(row = 9, column = 0, padx = 10, pady = 5, sticky = 'w')
+        yellow_example = ctk.CTkLabel(self, 
+                                      text = 'T is in the word but in the wrong spot.',
+                                      font = font,
+                                      )
+        grey_example = ctk.CTkLabel(self, 
+                                    text = 'C, A and P are not in the word in any spot.',
+                                    font = font,
+                                    )
+        green_example.grid(row = 5, 
+                           column = 0,
+                           padx = 10, 
+                           pady = 5,
+                           sticky = 'w')
+        yellow_example.grid(row = 7, 
+                            column = 0, 
+                            padx = 10, 
+                            pady = 5, 
+                            sticky = 'w')
+        grey_example.grid(row = 9, 
+                          column = 0, 
+                          padx = 10, 
+                          pady = 5, 
+                          sticky = 'w')
         
-    def add_example_grid(self, row, colour, word='WORDS', **kwargs):
+    def _example_grid(self, row, colour, word='WORDS', **kwargs):
         """
         Create a frame with 5 boxes in
         to display how colours change
@@ -163,6 +172,7 @@ class Help(ctk.CTkToplevel):
         self.example_frame.grid(row = row,
                                 column = 0,
                                 padx = 10,
+                                pady = 10, 
                                 sticky = 'w',
                                 **kwargs,
                                 )
