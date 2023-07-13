@@ -5,19 +5,17 @@ Created on Tue Jul 11 14:10:12 2023
 @author: willin6
 """
 
-from itertools import product
-
 # %% Functions
+from itertools import product
+from textwrap import dedent
 import customtkinter as ctk
 from CTkMessagebox import CTkMessagebox
-
 import src.hackathon.utils.constants as c
 from src.hackathon.utils.appearance import change_appearance
 from src.hackathon.utils.in_work_mode import boss_is_watching
 from src.hackathon.utils.words import get_definition, word_def_pair
 
 # from typing import Union, Tuple, Callable, Optional, Dict
-
 
 # %% Main
 # Dark by default
@@ -29,33 +27,196 @@ ctk.set_default_color_theme("green")
 class Help(ctk.CTkToplevel):
     """Help menu"""
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, parent, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.configure(fg_color=c.THEME[::-1])
+        self.configure(fg_color = c.THEME[::-1])
 
-        self.geometry("400x300+0+0")
+        self.geometry("+0+0")
+        
+        self.title('Rules')
+        # self.iconbitmap(rf"{c.ICON_PATH}/app_logo.ico")
 
-        self.label = ctk.CTkLabel(self, text="How to play: ")
-        self.label.pack(padx=20, pady=20)
+        self.howto = ctk.CTkLabel(self,
+                                  text = "How To Play",
+                                  font = c.FONT)
+        self.howto.grid(row = 0,
+                        column = 0,
+                        padx = 10,
+                        sticky='nw',
+                        )
+
+        self.guess = ctk.CTkLabel(self,
+                                  text = f"Guess the Wordle in {c.NUM_GUESSES} tries.",
+                                  font = ('Helvetica', 20))
+        self.guess.grid(row = 1,
+                        column = 0,
+                        padx = 10,
+                        sticky='nw',
+                        )
+
+
+        bullet_text = dedent(f"""\
+        • Each guess must be a valid {c.WORD_LENGTH}-letter word.
+
+        • The colour of the tiles will change to show how close your guess was to the word.
+        """)
+
+
+        self.bullets = ctk.CTkTextbox(self,
+                                      fg_color = 'transparent',
+                                      wrap = 'word',
+                                      font = ('Helvetica', 20),
+                                      width = 600,
+                                      height = 120,
+                                      activate_scrollbars = False,
+                                      )
+
+        self.bullets.insert('0.0', bullet_text)
+        self.bullets.grid(row = 2,
+                          column = 0,
+                          padx = 10,
+                          sticky='w',
+                          )
+        self.bullets.grid_propagate(False)
+
+        self.example = ctk.CTkLabel(self,
+                                    text = 'Examples',
+                                    font = ('Helvetica', 20, 'bold'),
+                               )
+        self.example.grid(row = 3,
+                          column = 0,
+                          padx = 10,
+                          pady = 5, 
+                          sticky = 'nw',
+                          )
+
+        
+        # These are just used
+        # for the example page
+        words = [
+            'WORDS',
+            'FIGHT',
+            'CLAMP',
+            ]
+        
+        
+        self.add_example_grid(4, c.GREEN, words[0])
+        self.add_example_grid(6, c.YELLOW, words[1])
+        self.add_example_grid(8, c.GREY, words[2])
+
+        self.green_example = ctk.CTkLabel(self, 
+                                          text = 'W is in the word and in the correct spot.',
+                                          font = ('Helvetica', 16),
+                                          )
+
+        
+        self.yellow_example = ctk.CTkLabel(self, 
+                                           text = 'T is in the word but in the wrong spot.',
+                                           font = ('Helvetica', 16),
+                                           )
+        self.grey_example = ctk.CTkLabel(self, 
+                                         text = 'C, A and P are not in the word in any spot.',
+                                         font = ('Helvetica', 16),
+                                         )
+        self.green_example.grid(row = 5, column = 0, padx = 10, pady = 5, sticky = 'w')
+        self.yellow_example.grid(row = 7, column = 0, padx = 10, pady = 5, sticky = 'w')
+        self.grey_example.grid(row = 9, column = 0, padx = 10, pady = 5, sticky = 'w')
+        
+    def add_example_grid(self, row, colour, word='WORDS', **kwargs):
+        """
+        Create a frame with 5 boxes in
+        to display how colours change
+        according to letter placement.
+
+        Parameters
+        ----------
+        row : TYPE
+            DESCRIPTION.
+        colour : TYPE
+            DESCRIPTION.
+
+        Returns
+        -------
+        None.
+
+        """
+
+        # Box 1 green for green example
+        # Box 5 yellow for yellow example
+        # Box 1, 3 and give grey for grey example.
+
+        # Using lists for box placement
+        # so we can use IN to check box idx
+        if colour == c.GREEN:
+            colour_box = [0]
+
+        elif colour == c.YELLOW:
+            colour_box = [4]
+
+        else:
+            colour_box = [0, 2, 4]
+
+        self.example_frame = ctk.CTkFrame(self,
+                                          width = 600,
+                                          fg_color = 'transparent',
+                                          )
+        self.example_frame.grid(row = row,
+                                column = 0,
+                                padx = 10,
+                                sticky = 'w',
+                                **kwargs,
+                                )
+
+
+        for idx, letter in enumerate(word):
+
+            if idx in colour_box:
+                fg_color = colour
+                hover_color = colour
+            else:
+                fg_color = 'transparent'
+                hover_color = c.THEME[::-1]
+            box = LetterBox(self.example_frame,
+                            text = letter,
+                            fg_color = fg_color,
+                            hover_color = hover_color)
+            box.grid(row = 0,
+                     column = idx,
+                     padx = 5)
 
 
 class LetterBox(ctk.CTkButton):
     """Default box for the letters to go in"""
 
-    def __init__(self, parent):
-        super().__init__(parent)
-        self.configure(
-            fg_color="transparent",
-            height=c.BUTTON_MAX_HEIGHT,
-            width=c.BUTTON_MAX_HEIGHT,
-            border_color=c.THEME,
-            border_width=1,
-            corner_radius=0,
-            font=c.FONT,
-            text="",
-            text_color=c.THEME,
-            hover_color=c.THEME[::-1],
-        )
+    def __init__(
+            self,
+            parent,
+            fg_color: str = 'transparent',
+            height: int = c.BUTTON_MAX_HEIGHT,
+            width: int = c.BUTTON_MAX_HEIGHT,
+            border_color: tuple = c.THEME,
+            border_width: int = 1,
+            corner_radius: int = 0,
+            font: tuple = c.FONT,
+            text: str = "",
+            text_color: tuple = c.THEME,
+            hover_color: tuple = c.THEME[::-1]
+            ):
+
+        super().__init__(
+            parent,
+            fg_color = fg_color,
+            height = height,
+            width = width,
+            border_color = border_color,
+            border_width = border_width,
+            corner_radius = corner_radius,
+            font = font,
+            text = text,
+            text_color = text_color,
+            hover_color = hover_color,
+            )
+
 
 
 # Main Frame
@@ -745,6 +906,7 @@ class App(ctk.CTk):
 
     def start_game(self):
         self.mainloop()
+        # self.focus_set()
 
     def restart_game(self):
         self.quit_game()
@@ -752,7 +914,7 @@ class App(ctk.CTk):
         self.start_game()
 
     def quit_game(self):
-        print("Quitting...")
+        print("Quitting...\n")
         self.update()
         self.quit()
         self.destroy()
