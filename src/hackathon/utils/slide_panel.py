@@ -6,6 +6,7 @@ Created on Tue Jun 13 11:12:44 2023
 """
 import customtkinter as ctk
 
+
 class SlidePanel(ctk.CTkFrame):
     def __init__(self, parent, start_pos, end_pos):
         super().__init__(master = parent)
