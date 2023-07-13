@@ -19,7 +19,7 @@ def get_word(word_length: int=5)-> str:
 
     """
     if word_length == 5:
-        path = r'./docs/word_list.txt'
+        path = r'./words/word_list.txt'
         with open(path, 'r') as file:
             target = random.choice(file.read().split('\n')).upper()
 
@@ -48,7 +48,7 @@ def get_definition(word: str)->str:
 
     """
     if len(word) == 5:
-        path = r'./docs/guess_list.txt'
+        path = r'./words/guess_list.txt'
         with open(path, 'r') as f:
             content = f.read()
             if word.upper() not in content:
