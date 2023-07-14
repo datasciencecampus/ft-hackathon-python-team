@@ -1,11 +1,6 @@
-# `hackathon`
+# `Team FinTrans Wordle clone`
 
-Wordle game
-
-```{warning}
-Where this documentation refers to the root folder we mean where this README.md is
-located.
-```
+Welcome to the FinTrans python team Wordle clone.
 
 ## Getting started
 
@@ -14,33 +9,46 @@ requirements](#requirements).
 
 It's suggested that you install this pack and it's requirements within a virtual environment.
 
-## Installing the package (Python Only)
+### Requirements
 
-Whilst in the root folder, in the command prompt, you can install the package and it's dependencies
-using:
+- Python 3.6.1+ installed
+- Customtkinter
+- CTkMessagebox
+- Pillow
+
+The required packages can be installed directly from the requirements.txt file. For the example directory below:
+```
+C:/
+└── Users/
+    └── YOUR_WINDOWS_USERNAME/
+        └── git_repos/
+            └── hackathon/
+                └── requirements.txt
+```
+If your Anaconda Prompt window opens in the C drive, the command is:
+```shell
+pip install -r "Users/YOUR_WINDOWS_USERNAME/git_repos/hackathon/requirements.txt"
+```
+If it opens in another drive, you must move to the C drive first:
 
 ```shell
-pip install -e .
+cd /d C:
+pip install -r "Users/YOUR_WINDOWS_USERNAME/git_repos/hackathon/requirements.txt"
 ```
 
-This installs an editable version of the package. Meaning, when you update the
-package code, you do not have to reinstall it for the changes to take effect.
-(This saves a lot of time when you test your code)
+## Running the game
 
-Remember to update the setup and requirement files inline with any changes to your
-package. The inital files contain the bare minimum to get you started.
+This game can be run using an IDE or a terminal window:
 
-## Running the pipeline (Python only)
+### IDE (recommended)
+Your IDE should allow you to run the code direcly by navigating to `main.py` and using the `run` (or equivalent) button..
 
-The entry point for the pipeline is stored within the package and called `run_pipeline.py`.
-To run the pipeline, run the following code in the terminal (whilst in the root directory of the
-project).
+### Terminal
 
+Open Anaconda Prompt and type in:
 ```shell
-python src/hackathon/run_pipeline.py
+python -m "Users/YOUR_WINDOWS_USERNAME/git_repos/hackathon/src/hackathon/main"
 ```
-
-Alternatively, most Python IDE's allow you to run the code directly from the IDE using a `run` button.
 
 ## Licence
 
@@ -48,21 +56,7 @@ Unless stated otherwise, the codebase is released under the MIT License. This co
 both the codebase and any sample code in the documentation. The documentation is ©
 Crown copyright and available under the terms of the Open Government 3.0 licence.
 
-### Requirements
 
-- Python 3.6.1+ installed
-
-The required packages can be install directly from the requirements.txt file. For the example directory below:
-```
-D:/
-└── git_repos/
-    └── Hackathon/
-        └── requirements.txt
-```
-The command is:
-```shell
-pip install -r "D:/git_repos/Hackathon/requirements.txt"
-```
 
 ## Acknowledgements
 
