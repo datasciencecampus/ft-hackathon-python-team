@@ -11,6 +11,8 @@ import src.hackathon.utils.constants as c
 
 from src.hackathon.utils.appearance import change_appearance
 from src.hackathon.utils.in_work_mode import boss_is_watching
+
+
 # %% Main
 class Options(ctk.CTkFrame):
     """Side panel containing in-game options"""
@@ -55,7 +57,7 @@ class Options(ctk.CTkFrame):
 
         option_label.grid_propagate(False)
 
-    def add_dark_mode(self)-> None:
+    def add_dark_mode(self) -> None:
         """
         Adds a switch to enable/disable
         dark mode. Enabled by default.
@@ -82,12 +84,12 @@ class Options(ctk.CTkFrame):
         # Start with dark mode on
         theme.select()
 
-    def add_in_work_mode(self, parent: any)-> None:
+    def add_in_work_mode(self, parent: any) -> None:
         """
         Adds a mode that switches
         the app to calculator
         and changes icons/titles. Off by default.
-        
+
         TODO: Make it switch to a calculator
 
         Parameters
@@ -118,7 +120,7 @@ class Options(ctk.CTkFrame):
 
         in_work.grid_propagate(False)
 
-    def add_help_button(self, parent)-> None:
+    def add_help_button(self, parent) -> None:
         """
         Opens up a help window containing instructions.
 
@@ -140,7 +142,7 @@ class Options(ctk.CTkFrame):
 
         help_button.grid_propagate(False)
 
-    def add_retry_button(self, parent: any)-> None:
+    def add_retry_button(self, parent: any) -> None:
         """
         Adds a retry button to the options
         pane that restarts the app when clicked.
@@ -163,7 +165,7 @@ class Options(ctk.CTkFrame):
 
         quit_button.grid_propagate(False)
 
-    def add_quit_button(self, parent: any)-> None:
+    def add_quit_button(self, parent: any) -> None:
         """
         Adds a quit button to the options
         pane that closes the app when clicked.

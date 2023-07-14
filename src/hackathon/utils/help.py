@@ -15,6 +15,7 @@ from src.hackathon.utils.letterbox import LetterBox
 
 # %% Main
 
+
 class Help(ctk.CTkToplevel):
     """Display instructions for how the game works"""
 

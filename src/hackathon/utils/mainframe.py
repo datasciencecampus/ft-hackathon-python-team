@@ -5,9 +5,9 @@ Created on Fri Jul 14 15:41:41 2023
 @author: willin6
 """
 
+# %% Imports
 from itertools import product
 
-# %% Imports
 import customtkinter as ctk
 from CTkMessagebox import CTkMessagebox
 
@@ -15,6 +15,7 @@ import src.hackathon.utils.constants as c
 from src.hackathon.utils.letterbox import LetterBox
 
 # %% Main
+
 
 class Main(ctk.CTkFrame):
     """Main frame of game. This holds the grid of LetterBoxes"""

@@ -13,4 +13,3 @@ if __name__ == "__main__":
     wordle = Wordle()
     wordle.focus_set()
     wordle.start_game()
-    

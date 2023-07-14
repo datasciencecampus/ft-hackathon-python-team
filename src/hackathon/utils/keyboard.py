@@ -14,6 +14,7 @@ from src.hackathon.utils.words import get_definition
 
 # %% Main
 
+
 class Keyboard(ctk.CTkFrame):
     """On-screen keyboard"""
 
@@ -35,31 +36,31 @@ class Keyboard(ctk.CTkFrame):
         # Allows users to type
         parent.bind("<Key>", lambda event: self.key_pressed(event, parent))
 
-    def _increment_letter_position(self, parent: any)-> None:
+    def _increment_letter_position(self, parent: any) -> None:
         parent.current_position += 1
 
-    def _decrement_letter_position(self, parent: any)-> None:
+    def _decrement_letter_position(self, parent: any) -> None:
         parent.current_position -= 1
 
-    def _reset_letter_position(self, parent: any)-> None:
+    def _reset_letter_position(self, parent: any) -> None:
         parent.current_position = 0
 
-    def _increment_guess_number(self, parent: any)-> None:
+    def _increment_guess_number(self, parent: any) -> None:
         parent.guess_number += 1
 
-    def _decrement_guess_number(self, parent: any)-> None:
+    def _decrement_guess_number(self, parent: any) -> None:
         parent.guess_number -= 1
 
-    def _add_letter_to_word(self, parent: any, letter: str)-> None:
+    def _add_letter_to_word(self, parent: any, letter: str) -> None:
         parent.guess_word += letter
 
-    def _remove_letter_from_word(self, parent: any)-> None:
+    def _remove_letter_from_word(self, parent: any) -> None:
         parent.guess_word = parent.guess_word[:-1]
 
-    def _reset_word(self, parent: any)-> None:
+    def _reset_word(self, parent: any) -> None:
         parent.guess_word = ""
 
-    def add_keyboard_keys(self, parent: any)-> None:
+    def add_keyboard_keys(self, parent: any) -> None:
         """
         Add on-screen keyboard.
 
@@ -102,7 +103,7 @@ class Keyboard(ctk.CTkFrame):
 
                 self.key_coords[idx, idy] = letter
 
-    def key_pressed(self, event: any, parent: any)-> None:
+    def key_pressed(self, event: any, parent: any) -> None:
         """
         Handler for key press event. Adds
         whatever the user has typed or pressed
@@ -141,7 +142,7 @@ class Keyboard(ctk.CTkFrame):
         elif key in ["RETURN", "ENTER"]:
             self.submit_guess(parent)
 
-    def _add_letter(self, parent: any, key: str)-> None:
+    def _add_letter(self, parent: any, key: str) -> None:
         """
         Add letter to next available space in grid.
 
@@ -151,7 +152,7 @@ class Keyboard(ctk.CTkFrame):
             Parent class.
         key : str
             Letter submitted.
-            
+
         Returns
         -------
         None.
@@ -166,7 +167,7 @@ class Keyboard(ctk.CTkFrame):
             self._increment_letter_position(parent)
             self._add_letter_to_word(parent, key)
 
-    def _delete_letter(self, parent: any)-> None:
+    def _delete_letter(self, parent: any) -> None:
         """
         Delete last latter from grid
 
@@ -187,7 +188,7 @@ class Keyboard(ctk.CTkFrame):
             button = grid[parent.guess_number, parent.current_position]
             button.configure(text="")
 
-    def submit_guess(self, parent: any)-> None:
+    def submit_guess(self, parent: any) -> None:
         """
         Handler for guess submission
 

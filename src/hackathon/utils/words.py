@@ -4,11 +4,12 @@ import nltk
 from nltk.corpus import wordnet, words
 
 # %% Downloads
-nltk.download('wordnet', quiet=True)
-nltk.download('words', quiet=True)
-#%% Functions
+nltk.download("wordnet", quiet=True)
+nltk.download("words", quiet=True)
+# %% Functions
 
-def get_word(word_length: int=5)-> str:
+
+def get_word(word_length: int = 5) -> str:
     """
     Generate a random {word_length} letter word from the English language corpus.
 
@@ -19,20 +20,21 @@ def get_word(word_length: int=5)-> str:
 
     """
     if word_length == 5:
-        path = r'./words/word_list.txt'
-        with open(path, 'r') as file:
-            target = random.choice(file.read().split('\n')).upper()
+        path = r"./words/word_list.txt"
+        with open(path, "r") as file:
+            target = random.choice(file.read().split("\n")).upper()
 
     else:
         wordlist = [word for word in words.words() if len(word) == word_length]
         if wordlist:
             target = random.choice(wordlist).upper()
         else:
-            raise IndexError(f'No words have length {word_length}')
+            raise IndexError(f"No words have length {word_length}")
 
     return target
 
-def get_definition(word: str)->str:
+
+def get_definition(word: str) -> str:
     """
     Returns the definition of a word using wordnet.
 
@@ -48,8 +50,8 @@ def get_definition(word: str)->str:
 
     """
     if len(word) == 5:
-        path = r'./words/guess_list.txt'
-        with open(path, 'r') as f:
+        path = r"./words/guess_list.txt"
+        with open(path, "r") as f:
             content = f.read()
             if word.upper() not in content:
                 return
@@ -61,7 +63,8 @@ def get_definition(word: str)->str:
     else:
         return
 
-def word_def_pair(word_length: int=5)-> tuple:
+
+def word_def_pair(word_length: int = 5) -> tuple:
     """
     Get word-definition as a tuple
 
@@ -83,7 +86,7 @@ def word_def_pair(word_length: int=5)-> tuple:
     return (word, definition)
 
 
-#%% Example and testing
-if __name__== '__main__':
+# %% Example and testing
+if __name__ == "__main__":
     word = get_word()
     print(f"Hocus pocus randomus wordus: {word} \n Definition: {get_definition(word)}")

@@ -16,8 +16,9 @@ from src.hackathon.utils.options import Options
 from src.hackathon.utils.words import word_def_pair
 
 # %% Main
-
 class Wordle(ctk.CTk):
+    """Game window"""
+    
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         # General setup
@@ -62,7 +63,7 @@ class Wordle(ctk.CTk):
         # Keyboard
         self.keyboard = Keyboard(self)
 
-    def start_game(self)-> None:
+    def start_game(self) -> None:
         """
         Starts the app.
 
@@ -73,7 +74,7 @@ class Wordle(ctk.CTk):
         """
         self.mainloop()
 
-    def restart_game(self)-> None:
+    def restart_game(self) -> None:
         """
         Restart the app.
 
@@ -86,7 +87,7 @@ class Wordle(ctk.CTk):
         self.__init__()
         self.start_game()
 
-    def quit_game(self)-> None:
+    def quit_game(self) -> None:
         """
         Closes the app.
 
@@ -100,7 +101,7 @@ class Wordle(ctk.CTk):
         self.quit()
         self.destroy()
 
-    def help_window(self)-> None:
+    def help_window(self) -> None:
         """
         Bring up help window and focus.
 

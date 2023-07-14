@@ -6,14 +6,15 @@ Created on Mon Jun 12 17:51:30 2023
 """
 
 # TODO: make constants file
-RED = '#BB0A1E'
-YELLOW = '#B59F3B'
-GREEN = '#538D4E'
-GREY = '#3A3A3C'
-BLACK = '#000000'
-WHITE = '#FFFFFF'
+RED = "#BB0A1E"
+YELLOW = "#B59F3B"
+GREEN = "#538D4E"
+GREY = "#3A3A3C"
+BLACK = "#000000"
+WHITE = "#FFFFFF"
 
-def get_colours(word: str, target: str)-> list:
+
+def get_colours(word: str, target: str) -> list:
     """
     Compare user-submitted word
     against target and give colour
@@ -32,7 +33,7 @@ def get_colours(word: str, target: str)-> list:
     lst_target = list(target)
 
     # Blank list ready to be populated with colours
-    colours = ['' for i in target]
+    colours = ["" for i in target]
 
     for i, letter in enumerate(word):
         # First check for exact matches
@@ -42,8 +43,7 @@ def get_colours(word: str, target: str)-> list:
             lst_target[i] = None
 
     for i, letter in enumerate(word):
-
-        if colours[i] == '':
+        if colours[i] == "":
             if letter in lst_target:
                 colours[i] = YELLOW
                 # Remove partial match so not double-counted
