@@ -1,6 +1,8 @@
 # `Team FinTrans Wordle clone`
 
-Welcome to the FinTrans python team Wordle clone.
+Welcome to the FinTrans python team Wordle.
+
+To use, clone the repository in your local drive. We suggest cloning into a folder called git_repos and the instructions will be based on that.
 
 ## Getting started
 
@@ -22,18 +24,18 @@ C:/
 └── Users/
     └── YOUR_WINDOWS_USERNAME/
         └── git_repos/
-            └── hackathon/
+            └── hackathon-python-team/
                 └── requirements.txt
 ```
 If your Anaconda Prompt window opens in the C drive, the command is:
 ```shell
-pip install -r "Users/YOUR_WINDOWS_USERNAME/git_repos/hackathon/requirements.txt"
+pip install -r "Users/YOUR_WINDOWS_USERNAME/git_repos/hackathon-python-team/requirements.txt"
 ```
 If it opens in another drive, you must move to the C drive first:
 
 ```shell
 cd /d C:
-pip install -r "Users/YOUR_WINDOWS_USERNAME/git_repos/hackathon/requirements.txt"
+pip install -r "Users/YOUR_WINDOWS_USERNAME/git_repos/hackathon-python-team/requirements.txt"
 ```
 
 ## Running the game
@@ -45,9 +47,9 @@ Your IDE should allow you to run the code direcly by navigating to `main.py` and
 
 ### Terminal
 
-Open Anaconda Prompt and type in:
+Open Anaconda Prompt and type in :
 ```shell
-python -m "Users.YOUR_WINDOWS_USERNAME.git_repos.hackathon.src.hackathon.main"
+python -m Users.YOUR_WINDOWS_USERNAME.git_repos.hackathon.src.hackathon.main
 ```
 
 ## Licence
