@@ -47,7 +47,7 @@ Your IDE should allow you to run the code direcly by navigating to `main.py` and
 
 Open Anaconda Prompt and type in:
 ```shell
-python -m "Users/YOUR_WINDOWS_USERNAME/git_repos/hackathon/src/hackathon/main"
+python -m "Users.YOUR_WINDOWS_USERNAME.git_repos.hackathon.src.hackathon.main"
 ```
 
 ## Licence
