@@ -9,11 +9,6 @@ def boss_is_watching(boss_switch: str,
     new_answer = boss_switch.get()
     if new_answer == 'yes':
         root.title('Super serious work stuff')
-
-        # Minimize when pressing left/right CTRL button
-        root.bind('<Control_L>', lambda event: on_unmap())
-        root.bind('<Control_R>', lambda event: on_unmap())
-
         root.iconbitmap(rf'{ICON_PATH}/placeholder_calculator.ico')
     else:
         # Window name
