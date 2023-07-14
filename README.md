@@ -61,7 +61,7 @@ Crown copyright and available under the terms of the Open Government 3.0 licence
 
 
 ## Acknowledgements
-This game was made by Nathan Williams, Olivia Gibson, Iasmina Ursul, Dragos Cozma and Vicky Hoolohan
+This game was made by Nathan Williams, Olivia Gibson, Iasmina Ursul, Dragos Cozma and Vicky Hoolohan.
 [This project structure is based on the `govcookiecutter` template
 project][govcookiecutter].
 
